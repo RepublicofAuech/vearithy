@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 @app.route('/verify')
 def verify():
-    return redirect("https://discord.com/api/oauth2/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=http://localhost:5000/callback&response_type=code&scope=identify")
+    return redirect("https://discord.com/oauth2/authorize?client_id=1245921092879650917&permissions=8&integration_type=0&scope=bot")
 
 @app.route('/callback')
 def callback():
