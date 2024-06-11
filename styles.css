@@ -1,0 +1,45 @@
+body {
+    background-color: #121212;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    text-align: center;
+    border: 1px solid #333;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #1e1e1e;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.notice {
+    margin-bottom: 10px;
+    color: #888;
+}
+
+#discord-info {
+    margin-bottom: 20px;
+}
+
+#auth-button {
+    background-color: #7289da;
+    color: #ffffff;
+    border: none;
+    padding: 15px 30px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#auth-button:hover {
+    background-color: #5b6eae;
+}
