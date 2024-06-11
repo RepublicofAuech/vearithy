@@ -16,7 +16,3 @@ function displayDiscordInfo(info) {
         `;
     }
 }
-
-document.getElementById('verify-btn').onclick = function() {
-    window.location.href = 'https://republicofauech.github.io/vearithy/';
-};
