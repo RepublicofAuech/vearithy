@@ -1,6 +1,6 @@
 body {
-    background-color: #121212;
-    color: #ffffff;
+    background-color: #2C2F33; /* Discordの背景色 */
+    color: #FFFFFF; /* 白文字 */
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
@@ -11,21 +11,32 @@ body {
 
 .container {
     text-align: center;
-    border: 1px solid #333;
+    background-color: #23272A; /* 灰色の背景 */
     padding: 20px;
-    border-radius: 8px;
-    background-color: #1e1e1e;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-h1 {
-    margin-bottom: 20px;
+.button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #5865F2; /* 青色のボタン */
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 5px;
+    border: 2px solid #ffffff; /* 白色の枠 */
 }
 
-.notice {
-    margin-bottom: 10px;
-    color: #888;
+.button:hover {
+    background-color: #4752c4;
 }
 
-#discord-info {
-    margin-bottom: 20px;
+#user-info p {
+    margin: 5px 0;
+}
+
+#user-info img {
+    border-radius: 50%;
+    margin-top: 10px;
 }
