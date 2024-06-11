@@ -15,7 +15,7 @@ body {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    width: 60%; /* 横幅を設定 */
+    width: 50%; /* 横幅を50%に設定 */
     aspect-ratio: 3 / 2; /* 縦横比を2:3に設定 */
 }
 
