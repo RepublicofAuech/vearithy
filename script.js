@@ -12,7 +12,7 @@ function displayDiscordInfo(info) {
         discordInfoDiv.innerHTML = `
             <p><strong>ユーザー名:</strong> ${info.username}#${info.discriminator}</p>
             <p><strong>ID:</strong> ${info.id}</p>
-            ${info.avatar_url ? `<img src="${info.avatar_url}" alt="Avatar" width="100">` : ''}
+            ${info.avatar ? `<img src="https://cdn.discordapp.com/avatars/${info.id}/${info.avatar}.png" alt="Avatar" width="100">` : ''}
         `;
     }
 }
