@@ -15,8 +15,16 @@ body {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    width: 50%; /* 横幅を50%に設定 */
+    width: 40%; /* 横幅を40%に設定 */
     aspect-ratio: 3 / 2; /* 縦横比を2:3に設定 */
+}
+
+h1 {
+    font-size: 1.5em; /* タイトルの文字サイズ */
+}
+
+p {
+    font-size: 1em; /* 残りの文字サイズ */
 }
 
 .button {
@@ -28,6 +36,7 @@ body {
     text-decoration: none;
     border-radius: 5px;
     border: 2px solid #ffffff; /* 白色の枠 */
+    font-size: 1em; /* ボタンの文字サイズ */
 }
 
 .button:hover {
