@@ -29,17 +29,3 @@ h1 {
 #discord-info {
     margin-bottom: 20px;
 }
-
-#auth-button {
-    background-color: #7289da;
-    color: #ffffff;
-    border: none;
-    padding: 15px 30px;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-#auth-button:hover {
-    background-color: #5b6eae;
-}
