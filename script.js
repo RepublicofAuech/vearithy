@@ -1,8 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Add event listener inside DOMContentLoaded event
-    document.getElementById('login-button').addEventListener('click', function() {
-        window.location.href = 'http://localhost:5000/login';
-    });
+    var loginButton = document.getElementById('login-button');
+    if (loginButton) {
+        loginButton.addEventListener('click', function() {
+            window.location.href = 'http://localhost:5000/login';
+        });
+    } else {
+        console.error('Login button element not found');
+    }
 
     fetch('http://localhost:5000/user_info.json', {
         method: 'GET',
