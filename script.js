@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     fetch('http://localhost:5000/user_info.json', {
         method: 'GET',
-        credentials: 'include'
+        credentials: 'include'  // 認証情報を含める
     })
     .then(response => {
         console.log('Fetch response:', response);
