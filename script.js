@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', function() {
     var loginButton = document.getElementById('login-button');
     if (loginButton) {
         loginButton.addEventListener('click', function() {
-            // Discordの認証ページへリダイレクト
             window.location.href = 'http://localhost:5000/login';
         });
     } else {
@@ -24,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('User data:', data);
         if (!data.error) {
             document.getElementById('user-info').style.display = 'block';
-            document.getElementById('avatar').src = data.avatar_url; // ユーザーのアバター画像のURLを設定する
+            document.getElementById('avatar').src = data.avatar_url;
             document.getElementById('username').innerText = `${data.username}#${data.discriminator}`;
         } else {
             console.error('Error fetching user info:', data.error);
