@@ -13,6 +13,8 @@ window.onload = function() {
             document.getElementById('user-info').style.display = 'block';
             document.getElementById('avatar').src = data.avatar_url;
             document.getElementById('username').innerText = `${data.username}#${data.discriminator}`;
+        } else {
+            console.error('Error fetching user info:', data.error);
         }
     })
     .catch(error => console.error('Error fetching user info:', error));
