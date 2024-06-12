@@ -2,17 +2,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>認証ページ</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>OAuth2 with Cookies</title>
 </head>
 <body>
-    <div class="container">
-        <h1>認証ページ</h1>
-        <div id="user-info">
-            <p>ユーザー情報を取得中...</p>
-        </div>
-        <a href="http://localhost:5000/login" id="login-button" class="button">認証する</a>
-    </div>
-    <script src="script.js"></script>
+    <h1>OAuth2 with Cookies</h1>
+    <script>
+        // クッキーの値を取得してコンソールに表示
+        function getCookie(name) {
+            let cookieArr = document.cookie.split(";");
+            for (let i = 0; i < cookieArr.length; i++) {
+                let cookiePair = cookieArr[i].split("=");
+                if (name == cookiePair[0].trim()) {
+                    return decodeURIComponent(cookiePair[1]);
+                }
+            }
+            return null;
+        }
+
+        // "access_token"クッキーを取得して表示
+        let accessToken = getCookie("access_token");
+        console.log("Access token from cookie:", accessToken);
+
+        // アクセストークンが存在する場合、ユーザー情報を取得
+        if (accessToken) {
+            fetch('http://localhost:5000/user_info.json', {
+                credentials: 'include'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error("Error:", data.error);
+                } else {
+                    console.log("User info:", data);
+                }
+            })
+            .catch(error => console.error("Error fetching user info:", error));
+        } else {
+            console.log("No access token found in cookies.");
+        }
+    </script>
 </body>
 </html>
