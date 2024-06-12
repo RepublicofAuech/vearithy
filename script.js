@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (match) return match[2];
     }
 
+
     // アクセストークンを取得し、ユーザー情報を取得する
     var accessToken = getCookie('access_token');
     if (accessToken) {
