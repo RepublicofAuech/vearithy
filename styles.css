@@ -10,36 +10,28 @@ body {
 }
 
 .container {
-    width: 15%;
+    background-color: #36393f;
     padding: 20px;
     border-radius: 10px;
-    background-color: #36393f;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-h1, p {
     text-align: center;
+    width: 15%;
 }
 
-#login-button {
-    display: block;
-    width: 100%;
-    padding: 10px;
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 20px;
+    color: #ffffff;
     background-color: #7289da;
-    border: none;
+    text-decoration: none;
     border-radius: 5px;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 10px;
 }
 
-#user-info {
-    text-align: center;
+.button:hover {
+    background-color: #677bc4;
 }
 
-#avatar {
+#user-info img {
     border-radius: 50%;
-    width: 100px;
-    height: 100px;
+    margin-top: 10px;
 }
