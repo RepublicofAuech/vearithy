@@ -1,6 +1,6 @@
 body {
-    background-color: #2C2F33; /* Discordの背景色 */
-    color: #FFFFFF; /* 白文字 */
+    background-color: #2C2F33;
+    color: #FFFFFF;
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
@@ -11,12 +11,11 @@ body {
 
 .container {
     text-align: center;
-    background-color: #23272A; /* 灰色の背景 */
+    background-color: #23272A;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    width: 15%; /* 横幅を15%に設定 */
-    aspect-ratio: 3 / 2; /* 縦横比を2:3に設定 */
+    width: 15%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -24,23 +23,23 @@ body {
 }
 
 h1 {
-    font-size: 1.5em; /* タイトルの文字サイズ */
+    font-size: 1.5em;
 }
 
 p {
-    font-size: 1em; /* 残りの文字サイズ */
+    font-size: 1em;
 }
 
 .button {
     display: inline-block;
     margin-top: 20px;
     padding: 10px 20px;
-    background-color: #5865F2; /* 青色のボタン */
+    background-color: #5865F2;
     color: #ffffff;
     text-decoration: none;
     border-radius: 5px;
-    border: 2px solid #ffffff; /* 白色の枠 */
-    font-size: 1em; /* ボタンの文字サイズ */
+    border: 2px solid #ffffff;
+    font-size: 1em;
 }
 
 .button:hover {
