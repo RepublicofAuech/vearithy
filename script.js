@@ -1,5 +1,5 @@
-window.onload = function() {
-    // Add event listener inside window.onload
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listener inside DOMContentLoaded event
     document.getElementById('login-button').addEventListener('click', function() {
         window.location.href = 'http://localhost:5000/login';
     });
@@ -19,4 +19,4 @@ window.onload = function() {
         }
     })
     .catch(error => console.error('Error fetching user info:', error));
-};
+});
