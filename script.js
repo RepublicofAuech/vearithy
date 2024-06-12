@@ -8,20 +8,14 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Login button element not found');
     }
 
+    // クッキーからアクセストークンを取得する関数
     function getCookie(name) {
-        let cookieArr = document.cookie.split(";");
-        for (let i = 0; i < cookieArr.length; i++) {
-            let cookiePair = cookieArr[i].split("=");
-            if (name === cookiePair[0].trim()) {
-                return decodeURIComponent(cookiePair[1]);
-            }
-        }
-        return null;
+        var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        if (match) return match[2];
     }
 
-    let accessToken = getCookie("access_token");
-    console.log("Access token from cookie:", accessToken);
-
+    // アクセストークンを取得し、ユーザー情報を取得する
+    var accessToken = getCookie('access_token');
     if (accessToken) {
         fetch('http://localhost:5000/user_info.json', {
             method: 'GET',
@@ -46,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => console.error('Error fetching user info:', error));
     } else {
-        console.log("No access token found in cookies.");
-        document.getElementById('user-info').innerHTML = `<p>No access token found in cookies.</p>`;
+        console.log('No access token found in cookies.');
     }
 });
