@@ -9,12 +9,16 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Login button element not found');
     }
 
-    fetch('/user_info.json', {
+    fetch('http://localhost:5000/user_info.json', {
         method: 'GET',
         credentials: 'include'  // 認証情報を含める
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log('Fetch response:', response);
+        return response.json();
+    })
     .then(data => {
+        console.log('User data:', data);
         if (!data.error) {
             document.getElementById('user-info').style.display = 'block';
             document.getElementById('avatar').src = data.avatar_url; // ユーザーのアバター画像のURLを設定する
