@@ -1,21 +1,18 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Authentication</title>
+    <title>認証ページ</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <div class="box">
-            <h1>Discord 認証</h1>
-            <p>認証が必要です。</p>
-            <button id="login-button">認証する</button>
-            <div id="user-info" style="display: none;">
-                <img id="avatar" src="" alt="Avatar">
-                <p id="username"></p>
-            </div>
+        <h1>認証ページ</h1>
+        <div id="user-info">
+            <p>ユーザー情報を取得中...</p>
         </div>
+        <a href="http://localhost:5000/login" class="button">認証する</a>
     </div>
     <script src="script.js"></script>
 </body>
