@@ -8,54 +8,13 @@
 <body>
     <div class="container">
         <h1>認証ページ</h1>
-        <div id="user-info">
+        <div id="user-info" style="display: none;">
             <p>ユーザー情報を取得中...</p>
+            <img id="avatar" src="" alt="Avatar" />
+            <p id="username"></p>
         </div>
-        <a href="/login" class="button">認証する</a>
+        <button id="login-button" class="button">認証する</button>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            function getCookie(name) {
-                let cookieArr = document.cookie.split(";");
-                for (let i = 0; i < cookieArr.length; i++) {
-                    let cookiePair = cookieArr[i].split("=");
-                    if (name === cookiePair[0].trim()) {
-                        return decodeURIComponent(cookiePair[1]);
-                    }
-                }
-                return null;
-            }
-
-            let accessToken = getCookie("access_token");
-            console.log("Access token from cookie:", accessToken);
-
-            if (accessToken) {
-                fetch('http://localhost:5000/user_info.json', {
-                    credentials: 'include'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    const userInfoDiv = document.getElementById('user-info');
-                    if (data.error) {
-                        console.error("Error:", data.error);
-                        userInfoDiv.innerHTML = `<p>Error: ${data.error}</p>`;
-                    } else {
-                        console.log("User info:", data);
-                        userInfoDiv.innerHTML = `
-                            <p>Username: ${data.username}#${data.discriminator}</p>
-                            <img src="${data.avatar_url}" alt="Avatar" />
-                        `;
-                    }
-                })
-                .catch(error => {
-                    console.error("Error fetching user info:", error);
-                    document.getElementById('user-info').innerHTML = `<p>Error fetching user info: ${error}</p>`;
-                });
-            } else {
-                console.log("No access token found in cookies.");
-                document.getElementById('user-info').innerHTML = `<p>No access token found in cookies.</p>`;
-            }
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
