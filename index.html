@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,13 +9,52 @@
 <body>
     <div class="container">
         <h1>認証ページ</h1>
-        <div id="user-info" style="display: none;">
+        <div id="user-info">
             <p>ユーザー情報を取得中...</p>
-            <img id="avatar" src="" alt="Avatar" />
-            <p id="username"></p>
         </div>
-        <button id="login-button" class="button">認証する</button>
+        <a href="http://localhost:5000/login" class="button">認証する</a>
     </div>
-    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function getCookie(name) {
+                var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+                if (match) return match[2];
+                return null;
+            }
+
+            const accessToken = getCookie('access_token');
+            console.log("Access token from cookie:", accessToken);
+
+            if (!accessToken) {
+                console.log('No access token found in cookies.');
+                return;
+            }
+
+            fetch('http://localhost:5000/user_info.json', {
+                method: 'GET',
+                credentials: 'include'
+            })
+            .then(response => {
+                console.log('Fetch response:', response);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('User data:', data);
+                if (!data.error) {
+                    const userInfoDiv = document.getElementById('user-info');
+                    userInfoDiv.innerHTML = `
+                        <img id="avatar" src="${data.avatar_url}" alt="Avatar">
+                        <p id="username">${data.username}#${data.discriminator}</p>
+                    `;
+                } else {
+                    console.error('Error fetching user info:', data.error);
+                }
+            })
+            .catch(error => console.error('Error fetching user info:', error));
+        });
+    </script>
 </body>
 </html>
