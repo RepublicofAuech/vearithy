@@ -1,8 +1,9 @@
-document.getElementById('login-button').addEventListener('click', function() {
-    window.location.href = 'http://localhost:5000/login';
-});
-
 window.onload = function() {
+    // Add event listener inside window.onload
+    document.getElementById('login-button').addEventListener('click', function() {
+        window.location.href = 'http://localhost:5000/login';
+    });
+
     fetch('http://localhost:5000/user_info.json', {
         method: 'GET',
         credentials: 'include'  // Include credentials in the request
