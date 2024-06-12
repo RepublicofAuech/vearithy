@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .then(response => {
         console.log('Fetch response:', response);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         return response.json();
     })
     .then(data => {
