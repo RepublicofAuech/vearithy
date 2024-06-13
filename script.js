@@ -1,13 +1,31 @@
 document.addEventListener('DOMContentLoaded', function() {
     function getCookie(name) {
- 　　　  const cookieValue = `; ${document.cookie}`;
-  　　　 const cookieParts = cookieValue.split(`; ${name}=`);
-   　　　if (cookieParts.length === 2) {
-　　　　　　　return cookieParts.pop().split(';').shift();
- 　　　　} else {
-　　　　　　　return null;
-　　　　 }
-　　}
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    function setCookie(name, value, days) {
+        let expires = "";
+        if (days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/; samesite=None; secure";
+    }
+
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    // クエリパラメータからアクセストークンを取得し、クッキーに保存する
+    const accessTokenFromQuery = getQueryParam('access_token');
+    if (accessTokenFromQuery) {
+        setCookie('access_token', accessTokenFromQuery, 1);
+        console.log("Access token from query:", accessTokenFromQuery);
+    }
 
     const accessToken = getCookie('access_token');
     console.log("Access token from cookie:", accessToken);
