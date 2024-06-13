@@ -8,9 +8,9 @@
 <body>
     <div class="container">
         <h1>認証ページ</h1>
-        <div id="auth-warning" class="auth-warning">
+        <div id="auth-warning">
             <p>注意: あなたのユーザー情報が正しいかどうかご確認ください。
-            表示されない場合、「認証する」ボタンを押して登録してください</p>
+                表示されない場合、「認証する」ボタンを押して登録を完了してください</p>
         </div>
         <div id="discord-info">
             <!-- Discord情報はJavaScriptで動的に挿入されます -->
@@ -19,7 +19,7 @@
             <img id="avatar" alt="Avatar">
             <p id="username"></p>
         </div>
-        <a href="https://localhost:5000/login" class="button">認証する</a>
+        <a href="https://discord.com/oauth2/authorize?client_id=1245921092879650917&response_type=code&redirect_uri=https%3A%2F%2Frepublicofauech.github.io%2Fvearithy%2F&scope=identify" class="button">認証する</a>
     </div>
     <script src="script.js"></script>
 </body>
