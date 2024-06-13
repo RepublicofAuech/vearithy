@@ -1,18 +1,29 @@
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>認証ページ</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        #auth-warning {
+            display: none;
+            color: yellow;
+            background-color: black;
+            padding: 10px;
+            margin: 20px 0;
+        }
+        #user-info {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>認証ページ</h1>
-        <div id="user-info">
-            <p>ユーザー情報を取得中...</p>
-        </div>
-        <a href="https://localhost:5000/login" class="button">認証する</a>
+    <div id="auth-warning">
+        <p>注意: ユーザー情報が正しいかどうかを確認してください。</p>
     </div>
-    <script src="script.js"></script>
+    <div id="user-info">
+        <img id="avatar" alt="Avatar">
+        <p id="username"></p>
+    </div>
+    <script src="app.js"></script>
 </body>
 </html>
