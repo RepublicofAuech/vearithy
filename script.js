@@ -32,14 +32,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const accessToken = getCookie('access_token');
     console.log("Access token from cookie:", accessToken);
 
+    // 注意喚起メッセージを表示する
+    const authWarning = document.getElementById('auth-warning');
+    authWarning.style.display = 'block';
+
     if (!accessToken) {
         console.log('No access token found in cookies.');
         return;
     }
 
-    // 注意喚起メッセージを表示
-    document.getElementById('auth-warning').style.display = 'block';
-
+    // ユーザー情報を取得して表示する
     fetch('https://localhost:5000/user_info.json', {
         method: 'GET',
         credentials: 'include'  // 認証情報を含める
@@ -54,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(data => {
         console.log('User data:', data);
         if (!data.error) {
-            document.getElementById('auth-warning').style.display = 'none';  // 認証後、注意喚起メッセージを非表示にする
+            // ユーザー情報を表示する
             const userInfoDiv = document.getElementById('user-info');
             userInfoDiv.innerHTML = `
                 <img id="avatar" src="${data.avatar_url}" alt="Avatar">
