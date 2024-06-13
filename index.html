@@ -2,27 +2,18 @@
 <head>
     <meta charset="UTF-8">
     <title>認証ページ</title>
-    <style>
-        #auth-warning {
-            display: none;
-            color: yellow;
-            background-color: black;
-            padding: 10px;
-            margin: 20px 0;
-        }
-        #user-info {
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="auth-warning">
-        <p>注意: ユーザー情報が正しいかどうかを確認してください。</p>
+    <div class="container">
+        <div id="auth-warning">
+            <p>注意: ユーザー情報が正しいかどうかを確認してください。</p>
+        </div>
+        <div id="user-info">
+            <img id="avatar" alt="Avatar">
+            <p id="username"></p>
+        </div>
     </div>
-    <div id="user-info">
-        <img id="avatar" alt="Avatar">
-        <p id="username"></p>
-    </div>
-    <script src="app.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
