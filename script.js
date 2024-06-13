@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    fetch('http://localhost:5000/user_info.json', {
+    fetch('https://localhost:5000/user_info.json', {
         method: 'GET',
         credentials: 'include'  // 認証情報を含める
     })
