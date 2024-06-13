@@ -14,7 +14,7 @@ body {
     padding: 20px;
     border-radius: 10px;
     text-align: center;
-    width: 15%;
+    width: 20%;
 }
 
 .button {
@@ -34,4 +34,17 @@ body {
 #user-info img {
     border-radius: 50%;
     margin-top: 10px;
+}
+
+#auth-warning {
+    display: none;
+    color: #ffcc00;
+    background-color: #000000;
+    padding: 10px;
+    margin: 20px 0;
+    border-radius: 5px;
+}
+
+#user-info {
+    display: none;
 }
