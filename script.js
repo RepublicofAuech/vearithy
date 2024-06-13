@@ -1,9 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
     function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-    }
+ 　　　  const cookieValue = `; ${document.cookie}`;
+  　　　 const cookieParts = cookieValue.split(`; ${name}=`);
+   　　　if (cookieParts.length === 2) {
+　　　　　　　return cookieParts.pop().split(';').shift();
+ 　　　　} else {
+　　　　　　　return null;
+　　　　 }
+　　}
 
     const accessToken = getCookie('access_token');
     console.log("Access token from cookie:", accessToken);
