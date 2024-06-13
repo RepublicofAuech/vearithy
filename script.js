@@ -37,6 +37,9 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
+    // 注意喚起メッセージを表示
+    document.getElementById('auth-warning').style.display = 'block';
+
     fetch('https://localhost:5000/user_info.json', {
         method: 'GET',
         credentials: 'include'  // 認証情報を含める
@@ -56,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <img id="avatar" src="${data.avatar_url}" alt="Avatar">
                 <p id="username">${data.username}#${data.discriminator}</p>
             `;
+            userInfoDiv.style.display = 'block';
         } else {
             console.error('Error fetching user info:', data.error);
         }
