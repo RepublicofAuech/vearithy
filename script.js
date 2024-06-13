@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(data => {
         console.log('User data:', data);
         if (!data.error) {
+            document.getElementById('auth-warning').style.display = 'none';  // 認証後、注意喚起メッセージを非表示にする
             const userInfoDiv = document.getElementById('user-info');
             userInfoDiv.innerHTML = `
                 <img id="avatar" src="${data.avatar_url}" alt="Avatar">
