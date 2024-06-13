@@ -25,6 +25,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (accessTokenFromQuery) {
         setCookie('access_token', accessTokenFromQuery, 1);
         console.log("Access token from query:", accessTokenFromQuery);
+        // URLからクエリパラメータを削除
+        window.history.replaceState({}, document.title, "/vearithy/");
     }
 
     const accessToken = getCookie('access_token');
