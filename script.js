@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (data.id) {
             document.getElementById('avatar').src = `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`;
             document.getElementById('username').innerText = `${data.username}#${data.discriminator}`;
+            document.getElementById('user-id').innerText = `(${data.id})`; // ユーザーIDを括弧で表示
             document.getElementById('user-info').style.display = 'block';
         } else {
             console.error('Error fetching user info:', data);
