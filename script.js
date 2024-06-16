@@ -1,11 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
-    function getQueryParam(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
     }
 
     const authButton = document.getElementById('auth-button');
-    const accessToken = getQueryParam('access_token');
+    const accessToken = getCookie('access_token'); // クッキーからアクセストークンを取得
 
     if (accessToken) {
         // アクセストークンがある場合、ユーザー情報を取得する処理
