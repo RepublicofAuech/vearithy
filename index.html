@@ -8,13 +8,14 @@
 <body>
     <div class="container">
         <h1>認証ページ</h1>
-        <div id="auth-warning" class="auth-warning" style="display: none;">
+        <div id="auth-warning" class="auth-warning">
             <p>注意: あなたのユーザー情報が正しいかどうかご確認ください。</p>
             <p>表示されない場合、「認証する」ボタンを押して登録を完了してください</p>
         </div>
         <div id="user-info">
             <img id="avatar" alt="Avatar">
             <p id="username"></p>
+            <p id="user-id"></p> <!-- ユーザーIDを表示するための要素 -->
         </div>
         <a href="https://discord.com/oauth2/authorize?client_id=1245921092879650917&response_type=code&redirect_uri=https%3A%2F%2Finky-neat-thyme.glitch.me%2Fcallback&scope=identify" class="button">認証する</a>
     </div>
