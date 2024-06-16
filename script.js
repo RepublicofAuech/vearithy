@@ -20,51 +20,48 @@ document.addEventListener('DOMContentLoaded', function() {
         return urlParams.get(param);
     }
 
-    // クエリパラメータからアクセストークンを取得し、クッキーに保存する
-    const accessTokenFromQuery = getQueryParam('access_token');
-    if (accessTokenFromQuery) {
-        setCookie('access_token', accessTokenFromQuery, 1);
-        console.log("Access token from query:", accessTokenFromQuery);
-        // URLからクエリパラメータを削除
-        window.history.replaceState({}, document.title, "/vearithy/");
+    // クエリパラメータからコードを取得し、トークンを取得するためのリクエストを送信する
+    const code = getQueryParam('code');
+    if (code) {
+        fetch(`https://gabby-buttercup-salmonberry.glitch.me/callback?code=${code}`, {
+            method: 'GET',
+            credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.access_token) {
+                setCookie('access_token', data.access_token, 1);
+                window.location.replace("/"); // リダイレクト先を適宜変更する
+            } else {
+                console.error('Error retrieving access token:', data);
+            }
+        })
+        .catch(error => console.error('Error retrieving access token:', error));
     }
 
     const accessToken = getCookie('access_token');
-    console.log("Access token from cookie:", accessToken);
-
-    // 注意喚起メッセージを表示する
-    const authWarning = document.getElementById('auth-warning');
-    authWarning.style.display = 'block';
 
     if (!accessToken) {
-        console.log('No access token found in cookies.');
+        document.getElementById('auth-warning').style.display = 'block';
         return;
     }
 
     // ユーザー情報を取得して表示する
-    fetch('https://localhost:5000/user_info.json', {
+    fetch('https://gabby-buttercup-salmonberry.glitch.me/user_info.json', {
         method: 'GET',
-        credentials: 'include'  // 認証情報を含める
+        credentials: 'include'
     })
-    .then(response => {
-        console.log('Fetch response:', response);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
-        console.log('User data:', data);
-        if (!data.error) {
-            // ユーザー情報を表示する
+        if (data.id) {
             const userInfoDiv = document.getElementById('user-info');
             userInfoDiv.innerHTML = `
-                <img id="avatar" src="${data.avatar_url}" alt="Avatar">
+                <img id="avatar" src="https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png" alt="Avatar">
                 <p id="username">${data.username}#${data.discriminator}</p>
             `;
             userInfoDiv.style.display = 'block';
         } else {
-            console.error('Error fetching user info:', data.error);
+            console.error('Error fetching user info:', data);
         }
     })
     .catch(error => console.error('Error fetching user info:', error));
