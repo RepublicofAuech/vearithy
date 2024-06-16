@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const accessToken = getQueryParam('access_token');
 
     if (!accessToken) {
-        document.getElementById('auth-warning').style.display = 'block';
         return;
     }
 
