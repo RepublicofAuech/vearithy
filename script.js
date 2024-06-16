@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // クエリパラメータからコードを取得し、トークンを取得するためのリクエストを送信する
     const code = getQueryParam('code');
     if (code) {
-        fetch(`https://gabby-buttercup-salmonberry.glitch.me/callback?code=${code}`, {
+        fetch(`https://your-glitch-project-name.glitch.me/callback?code=${code}`, {
             method: 'GET',
             credentials: 'include'
         })
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ユーザー情報を取得して表示する
-    fetch('https://gabby-buttercup-salmonberry.glitch.me/user_info.json', {
+    fetch('https://your-glitch-project-name.glitch.me/user_info.json', {
         method: 'GET',
         credentials: 'include'
     })
