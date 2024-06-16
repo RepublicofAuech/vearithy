@@ -20,6 +20,24 @@ document.addEventListener('DOMContentLoaded', function() {
         return urlParams.get(param);
     }
 
+    const code = getQueryParam('code');
+    if (code) {
+        fetch(`https://inky-neat-thyme.glitch.me/callback?code=${code}`, {
+            method: 'GET',
+            credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.access_token) {
+                setCookie('access_token', data.access_token, 1);
+                window.location.replace("/"); // トークンが取得できたらページをリロード
+            } else {
+                console.error('Error retrieving access token:', data);
+            }
+        })
+        .catch(error => console.error('Error retrieving access token:', error));
+    }
+
     const accessToken = getCookie('access_token');
 
     if (!accessToken) {
@@ -27,18 +45,18 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    // ユーザー情報を取得して表示する
     fetch('https://inky-neat-thyme.glitch.me/user_info', {
         method: 'GET',
-        credentials: 'include'
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
     })
     .then(response => response.json())
     .then(data => {
         if (data.id) {
-            const userInfoDiv = document.getElementById('user-info');
             document.getElementById('avatar').src = `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`;
             document.getElementById('username').innerText = `${data.username}#${data.discriminator}`;
-            userInfoDiv.style.display = 'block';
+            document.getElementById('user-info').style.display = 'block';
         } else {
             console.error('Error fetching user info:', data);
         }
