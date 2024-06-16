@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ユーザー情報を取得して表示する
-    fetch('https://your-glitch-project.glitch.me/user_info', {
+    fetch('https://inky-neat-thyme.glitch.me/user_info', {
         method: 'GET',
         credentials: 'include'
     })
