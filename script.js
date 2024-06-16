@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ユーザー情報を取得して表示する
-    fetch('https://your-glitch-project-name.glitch.me/user_info.json', {
+    fetch('https://gabby-buttercup-salmonberry.glitch.me/user_info.json', {
         method: 'GET',
         credentials: 'include'
     })
