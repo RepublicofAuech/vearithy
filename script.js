@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // クエリパラメータからコードを取得し、トークンを取得するためのリクエストを送信する
     const code = getQueryParam('code');
     if (code) {
-        fetch(`https://your-glitch-project-name.glitch.me/callback?code=${code}`, {
+        fetch(`https://gabby-buttercup-salmonberry.glitch.me/callback?code=${code}`, {
             method: 'GET',
             credentials: 'include'
         })
