@@ -51,6 +51,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     return response.json();
                 })
+                .then(data => {
+                    const roleId = data.roleId; // server.js から返された roleId を取得
+                    console.log('Role ID:', roleId);
+                    // ここで roleId を使って適切な処理を行う
+                })
+                .catch(error => {
+                    console.error('Error granting role:', error);
+                    // エラー時の処理を記述
+                });
                 .then(result => console.log('Role granted successfully:', result))
                 .catch(error => console.error('Error granting role:', error));
             } else {
