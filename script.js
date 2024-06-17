@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const authButton = document.getElementById('auth-button');
     const accessToken = getQueryParam('access_token');
+    let roleId; // roleId を定義
 
     if (accessToken) {
         // アクセストークンがある場合、ユーザー情報を取得してロール付与を試みる
@@ -40,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     body: JSON.stringify({
                         access_token: accessToken,
                         user_id: data.id,
-                        role_id: roleId // server.js からの role_id を追加
+                        role_id: roleId // roleId を追加
                     })
                 });
             } else {
@@ -57,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(data => {
-            const roleId = data.roleId; // server.js から返された roleId を取得
+            roleId = data.roleId; // server.js から返された roleId を取得
             console.log('Role ID:', roleId);
             // ここで roleId を使って適切な処理を行う
         })
