@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .catch(error => {
                     console.error('Error granting role:', error);
                     // エラー時の処理を記述
-                });
+                })
                 .then(result => console.log('Role granted successfully:', result))
                 .catch(error => console.error('Error granting role:', error));
             } else {
