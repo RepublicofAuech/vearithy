@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Error fetching user info:', error);
-            resultText.innerText = 'ユーザー情報の取得中にエラーが発生しました。再度お試しください。';
+            resultText.innerText = 'ユーザー情報の取得中にエラーが発生しました。再度お試しください';
             resultMessage.style.display = 'block';
         });
     }
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 2000);
             });
         } else {
-            resultText.innerText = 'ユーザー情報が取得されていないか、サーバーが選択されていません。再度お試しください。';
+            resultText.innerText = 'ユーザー情報が取得されていないか、サーバーが選択されていません。再度お試しください';
             resultMessage.style.display = 'block';
         }
     });
