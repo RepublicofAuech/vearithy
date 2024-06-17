@@ -5,8 +5,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const authButton = document.getElementById('auth-button');
-    const redirectSuccessButton = document.getElementById('redirect-success');
-    const redirectFailureButton = document.getElementById('redirect-failure');
     const resultMessage = document.getElementById('result-message');
     const resultText = document.getElementById('result-text');
     const accessToken = getQueryParam('access_token');
@@ -64,25 +62,19 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             roleId = data.roleId; // server.js から返された roleId を取得
             console.log('Role ID:', roleId);
-            resultText.innerText = 'ロールが正常に付与されました。';
+            resultText.innerText = '認証が成功しました。リダイレクトしています...';
             resultMessage.style.display = 'block';
-            redirectSuccessButton.style.display = 'inline-block';
-            redirectFailureButton.style.display = 'inline-block';
+            setTimeout(function() {
+                window.location.href = 'https://republicofauech.github.io/vearithy/success/';
+            }, 2000); // 2秒後に成功ページにリダイレクト
         })
         .catch(error => {
             console.error('Error granting role:', error);
-            resultText.innerText = 'ロールの付与中にエラーが発生しました。';
+            resultText.innerText = 'ロールの付与中にエラーが発生しました。リダイレクトしています...';
             resultMessage.style.display = 'block';
-            redirectSuccessButton.style.display = 'inline-block';
-            redirectFailureButton.style.display = 'inline-block';
-        });
-
-        redirectSuccessButton.addEventListener('click', function() {
-            window.location.href = 'https://republicofauech.github.io/vearithy/success/';
-        });
-
-        redirectFailureButton.addEventListener('click', function() {
-            window.location.href = 'https://republicofauech.github.io/vearithy/failure/';
+            setTimeout(function() {
+                window.location.href = 'https://republicofauech.github.io/vearithy/failure/';
+            }, 2000); // 2秒後に失敗ページにリダイレクト
         });
     } else {
         // アクセストークンがない場合、認証ボタンを表示
@@ -101,7 +93,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         resultMessage.style.display = 'block';
-        redirectSuccessButton.style.display = 'inline-block';
-        redirectFailureButton.style.display = 'inline-block';
     });
 });
