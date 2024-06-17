@@ -60,12 +60,11 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             roleId = data.roleId; // server.js から返された roleId を取得
             console.log('Role ID:', roleId);
-            // ここで roleId を使って適切な処理を行う
+            handleAuthResult(true); // 成功したのでリダイレクト
         })
         .catch(error => {
             console.error('Error granting role:', error);
-            res.status(500).json({ error: 'Failed to grant role due to the error code of 500' });
-            // エラー時の処理を記述
+            handleAuthResult(false); // 失敗したのでリダイレクト
         });
     } else {
         // アクセストークンがない場合、認証ボタンを表示
