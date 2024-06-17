@@ -40,7 +40,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         user_id: data.id
                     })
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to grant role');
+                    }
+                    return response.json();
+                })
                 .then(result => console.log('Role granted successfully:', result))
                 .catch(error => console.error('Error granting role:', error));
             } else {
