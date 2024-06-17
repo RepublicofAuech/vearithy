@@ -5,7 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const authButton = document.getElementById('auth-button');
-    const redirectButton = document.getElementById('redirect-button');
+    const redirectSuccessButton = document.getElementById('redirect-success');
+    const redirectFailureButton = document.getElementById('redirect-failure');
     const resultMessage = document.getElementById('result-message');
     const resultText = document.getElementById('result-text');
     const accessToken = getQueryParam('access_token');
@@ -65,17 +66,23 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Role ID:', roleId);
             resultText.innerText = 'ロールが正常に付与されました。';
             resultMessage.style.display = 'block';
-            redirectButton.style.display = 'inline-block';
+            redirectSuccessButton.style.display = 'inline-block';
+            redirectFailureButton.style.display = 'inline-block';
         })
         .catch(error => {
             console.error('Error granting role:', error);
             resultText.innerText = 'ロールの付与中にエラーが発生しました。';
             resultMessage.style.display = 'block';
-            redirectButton.style.display = 'inline-block';
+            redirectSuccessButton.style.display = 'inline-block';
+            redirectFailureButton.style.display = 'inline-block';
         });
 
-        redirectButton.addEventListener('click', function() {
-            window.location.href = 'https://republicofauech.github.io/vearithy/'; // リダイレクト先のURLを設定する
+        redirectSuccessButton.addEventListener('click', function() {
+            window.location.href = 'https://republicofauech.github.io/vearithy/success/';
+        });
+
+        redirectFailureButton.addEventListener('click', function() {
+            window.location.href = 'https://republicofauech.github.io/vearithy/failure/';
         });
     } else {
         // アクセストークンがない場合、認証ボタンを表示
@@ -94,6 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         resultMessage.style.display = 'block';
-        redirectButton.style.display = 'inline-block';
+        redirectSuccessButton.style.display = 'inline-block';
+        redirectFailureButton.style.display = 'inline-block';
     });
 });
