@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         access_token: accessToken,
                         user_id: data.id
                     }),
-                    mode: 'cors'
+                    mode: 'no-cors'
                 })
                 .then(response => {
                     if (!response.ok) {
