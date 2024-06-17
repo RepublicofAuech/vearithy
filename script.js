@@ -40,7 +40,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     body: JSON.stringify({
                         access_token: accessToken,
                         user_id: data.id
-                    })
+                    }),
+                    mode: 'cors'
                 })
                 .then(response => {
                     if (!response.ok) {
