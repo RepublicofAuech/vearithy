@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(result => console.log('Role granted successfully:', result))
                 .catch(error => {
                     console.error('Error granting role:', error);
-                    alert('ロール付与中にエラーが発生しました。管理者に問い合わせてください。');
+                    alert('ロール付与中にエラーが発生しました');
                 });
             } else {
                 console.error('Error fetching user info:', data);
