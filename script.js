@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 option.text = guild.name;
                 guildSelect.appendChild(option);
             });
+            guildSelect.style.display = 'block'; // サーバー選択用の要素を表示する
         })
         .catch(error => {
             console.error('Error fetching guilds:', error);
