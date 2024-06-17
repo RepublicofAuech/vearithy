@@ -9,18 +9,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (accessToken) {
         // アクセストークンがある場合、ユーザー情報を取得してロール付与を試みる
-        fetch('https://inky-neat-thyme.glitch.me/grant_role', {
-            method: 'POST',
+        fetch('https://inky-neat-thyme.glitch.me/user_info', {
+            method: 'GET',
+            credentials: 'include', // クッキーを含む
             headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                access_token: 'your_access_token',
-                user_id: 'user_id',
-                role_id: 'role_id'
-            }),
-            mode: 'cors', // デフォルトは 'cors' ですが明示的に設定
-            credentials: 'include' // クッキーを含むリクエストを許可する場合
+                'Authorization': `Bearer ${accessToken}`
+            }
         })
         .then(response => {
             if (!response.ok) {
@@ -57,10 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     return response.json();
                 })
                 .then(result => console.log('Role granted successfully:', result))
-                .catch(error => {
-                    console.error('Error granting role:', error);
-                    alert('ロール付与中にエラーが発生しました');
-                });
+                .catch(error => console.error('Error granting role:', error));
             } else {
                 console.error('Error fetching user info:', data);
             }
