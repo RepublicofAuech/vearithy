@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // アクセストークンがある場合、ユーザー情報を取得する処理
         fetch('https://inky-neat-thyme.glitch.me/user_info', {
             method: 'GET',
+            credentials: 'include',
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
