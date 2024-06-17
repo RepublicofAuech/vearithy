@@ -7,14 +7,33 @@ document.addEventListener('DOMContentLoaded', function() {
     const authButton = document.getElementById('auth-button');
     const resultMessage = document.getElementById('result-message');
     const resultText = document.getElementById('result-text');
+    const guildSelect = document.getElementById('guild-select');
     const accessToken = getQueryParam('access_token');
     let userId;
 
+    fetch('https://inky-neat-thyme.glitch.me/guilds')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch guilds');
+            }
+            return response.json();
+        })
+        .then(guilds => {
+            guilds.forEach(guild => {
+                const option = document.createElement('option');
+                option.value = guild.id;
+                option.text = guild.name;
+                guildSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching guilds:', error);
+        });
+
     if (accessToken) {
-        // アクセストークンがある場合、ユーザー情報を取得
         fetch('https://inky-neat-thyme.glitch.me/user_info', {
             method: 'GET',
-            credentials: 'include', // クッキーを含む
+            credentials: 'include',
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
@@ -27,13 +46,12 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(data => {
             if (data.id) {
-                // ユーザー情報を表示
                 document.getElementById('avatar').src = `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`;
                 document.getElementById('username').innerText = `${data.username}#${data.discriminator}`;
                 document.getElementById('user-id').innerText = `(${data.id})`;
                 document.getElementById('user-info').style.display = 'block';
-                authButton.style.display = 'inline-block'; // 認証ボタンを表示
-                userId = data.id; // ユーザーIDを保存
+                authButton.style.display = 'inline-block';
+                userId = data.id;
             } else {
                 console.error('Error fetching user info:', data);
                 throw new Error('Failed to fetch user info');
@@ -47,17 +65,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     authButton.addEventListener('click', function() {
-        if (userId) {
-            // ロール付与リクエストを送信
+        const selectedGuildId = guildSelect.value;
+
+        if (userId && selectedGuildId) {
             fetch('https://inky-neat-thyme.glitch.me/grant_role', {
                 method: 'POST',
-                credentials: 'include', // クッキーを含む
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     access_token: accessToken,
-                    user_id: userId
+                    user_id: userId,
+                    guild_id: selectedGuildId,
+                    role_name: '認証済み'
                 })
             })
             .then(response => {
@@ -69,24 +90,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 return response.json();
             })
             .then(data => {
-                const roleId = data.roleId; // server.js から返された roleId を取得
+                const roleId = data.roleId;
                 console.log('Role ID:', roleId);
-                resultText.innerText = '認証中です...';
+                resultText.innerText = '認証が成功しました。リダイレクトしています...';
                 resultMessage.style.display = 'block';
                 setTimeout(function() {
                     window.location.href = 'https://republicofauech.github.io/vearithy/success/';
-                }, 2000); // 2秒後に成功ページにリダイレクト
+                }, 2000);
             })
             .catch(error => {
                 console.error('Error granting role:', error);
-                resultText.innerText = '認証中です...';
+                resultText.innerText = 'ロールの付与中にエラーが発生しました。リダイレクトしています...';
                 resultMessage.style.display = 'block';
                 setTimeout(function() {
                     window.location.href = 'https://republicofauech.github.io/vearithy/failure/';
-                }, 2000); // 2秒後に失敗ページにリダイレクト
+                }, 2000);
             });
         } else {
-            resultText.innerText = 'ユーザー情報が取得されていません。再度お試しください';
+            resultText.innerText = 'ユーザー情報が取得されていないか、サーバーが選択されていません。再度お試しください';
             resultMessage.style.display = 'block';
         }
     });
