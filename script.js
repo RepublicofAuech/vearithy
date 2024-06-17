@@ -15,7 +15,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Authorization': `Bearer ${accessToken}`
             }
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch user info');
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.id) {
                 document.getElementById('avatar').src = `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`;
