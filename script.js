@@ -8,26 +8,32 @@ document.addEventListener('DOMContentLoaded', function() {
     const accessToken = getQueryParam('access_token');
 
     if (accessToken) {
-        // アクセストークンがある場合、ユーザー情報を取得する処理
+        // アクセストークンがある場合、ユーザー情報を取得してロール付与を試みる
         fetch('https://inky-neat-thyme.glitch.me/user_info', {
             method: 'GET',
-            credentials: 'include', // クッキーを含める
+            credentials: 'include', // クッキーを含む
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch user info');
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.id) {
+                // ユーザー情報を表示
                 document.getElementById('avatar').src = `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`;
                 document.getElementById('username').innerText = `${data.username}#${data.discriminator}`;
                 document.getElementById('user-id').innerText = `(${data.id})`;
                 document.getElementById('user-info').style.display = 'block';
 
-                // ロール付与リクエストを送信する
+                // ロール付与リクエストを送信
                 fetch('https://inky-neat-thyme.glitch.me/grant_role', {
                     method: 'POST',
-                    credentials: 'include', // クッキーを含める
+                    credentials: 'include', // クッキーを含む
                     headers: {
                         'Content-Type': 'application/json'
                     },
