@@ -1,5 +1,4 @@
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
         // script.jsの処理をここに移動する
         function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
@@ -86,4 +85,3 @@
             }
         }
     });
-</script>
