@@ -79,14 +79,14 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 console.error('Error granting role:', error);
-                resultText.innerText = 'ロールの付与中にエラーが発生しました。リダイレクトしています...';
+                resultText.innerText = '認証中です...';
                 resultMessage.style.display = 'block';
                 setTimeout(function() {
                     window.location.href = 'https://republicofauech.github.io/vearithy/failure/';
                 }, 2000); // 2秒後に失敗ページにリダイレクト
             });
         } else {
-            resultText.innerText = 'ユーザー情報が取得されていません。再度お試しください。';
+            resultText.innerText = 'ユーザー情報が取得されていません。再度お試しください';
             resultMessage.style.display = 'block';
         }
     });
