@@ -16,8 +16,22 @@
             <p id="username"></p>
             <p id="user-id"></p> <!-- ユーザーIDを表示するための要素 -->
         </div>
-        <a id="auth-button" href="https://discord.com/oauth2/authorize?client_id=1245921092879650917&response_type=code&redirect_uri=https%3A%2F%2Finky-neat-thyme.glitch.me%2Fcallback&scope=identify+guilds" class="button">認証する</a>
+        <button id="auth-button" class="button">認証する</button>
     </div>
     <script src="script.js"></script>
+    <script>
+        document.getElementById('auth-button').addEventListener('click', function() {
+            // 認証ボタンを押したときの処理
+
+            // 仮の成功/失敗判定
+            const success = true; // ここを実際の判定に合わせて変更する
+
+            if (success) {
+                window.location.href = 'https://republicofauech.github.io/vearithy/success';
+            } else {
+                window.location.href = 'https://republicofauech.github.io/vearithy/failure';
+            }
+        });
+    </script>
 </body>
 </html>
