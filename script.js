@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const authButton = document.getElementById('auth-button');
+    const redirectButton = document.getElementById('redirect-button');
+    const resultMessage = document.getElementById('result-message');
+    const resultText = document.getElementById('result-text');
     const accessToken = getQueryParam('access_token');
     let roleId; // roleId をここで定義
 
@@ -60,14 +63,37 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             roleId = data.roleId; // server.js から返された roleId を取得
             console.log('Role ID:', roleId);
-            handleAuthResult(true); // 成功したのでリダイレクト
+            resultText.innerText = 'ロールが正常に付与されました。';
+            resultMessage.style.display = 'block';
+            redirectButton.style.display = 'inline-block';
         })
         .catch(error => {
             console.error('Error granting role:', error);
-            handleAuthResult(false); // 失敗したのでリダイレクト
+            resultText.innerText = 'ロールの付与中にエラーが発生しました。';
+            resultMessage.style.display = 'block';
+            redirectButton.style.display = 'inline-block';
+        });
+
+        redirectButton.addEventListener('click', function() {
+            window.location.href = 'https://republicofauech.github.io/vearithy/'; // リダイレクト先のURLを設定する
         });
     } else {
         // アクセストークンがない場合、認証ボタンを表示
         authButton.style.display = 'inline-block';
     }
+
+    authButton.addEventListener('click', function() {
+        // 認証ボタンを押したときの処理
+        // 仮の成功/失敗判定
+        const success = true; // ここを実際の判定に合わせて変更する
+
+        if (success) {
+            resultText.innerText = '認証が成功しました。ユーザー情報を取得しています...';
+        } else {
+            resultText.innerText = '認証に失敗しました。再度お試しください。';
+        }
+
+        resultMessage.style.display = 'block';
+        redirectButton.style.display = 'inline-block';
+    });
 });
