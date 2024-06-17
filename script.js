@@ -64,6 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Error granting role:', error);
+            res.status(500).json({ error: 'Failed to grant role due to the error code of 500' });
             // エラー時の処理を記述
         });
     } else {
