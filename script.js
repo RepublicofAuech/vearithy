@@ -11,17 +11,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // アクセストークンがある場合、ユーザー情報を取得する処理
         fetch('https://inky-neat-thyme.glitch.me/user_info', {
             method: 'GET',
-            credentials: 'include',
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch user info');
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
             if (data.id) {
                 document.getElementById('avatar').src = `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`;
@@ -42,7 +36,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Failed to grant role');
+                        return response.json().then(errorData => {
+                            throw new Error(`Failed to grant role: ${errorData.error}`);
+                        });
                     }
                     return response.json();
                 })
