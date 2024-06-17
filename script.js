@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const authButton = document.getElementById('auth-button');
     const accessToken = getQueryParam('access_token');
-    let roleId; // roleId を定義
+    let roleId; // roleId をここで定義
 
     if (accessToken) {
         // アクセストークンがある場合、ユーザー情報を取得してロール付与を試みる
