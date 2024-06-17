@@ -20,18 +20,21 @@
     </div>
     <script src="script.js"></script>
     <script>
-        document.getElementById('auth-button').addEventListener('click', function() {
-            // 認証ボタンを押したときの処理
-
-            // 仮の成功/失敗判定
-            const success = true; // ここを実際の判定に合わせて変更する
-
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('auth-button').addEventListener('click', function() {
+                // 認証ボタンを押したときの処理はscript.jsで行うのでここでは何もしない
+            });
+        });
+    </script>
+    <script>
+        // script.jsからのリダイレクトを処理する
+        function handleAuthResult(success) {
             if (success) {
                 window.location.href = 'https://republicofauech.github.io/vearithy/success';
             } else {
                 window.location.href = 'https://republicofauech.github.io/vearithy/failure';
             }
-        });
+        }
     </script>
 </body>
 </html>
