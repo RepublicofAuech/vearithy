@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('user-info').style.display = 'block';
 
                 // ロール付与リクエストを送信
-                fetch('https://inky-neat-thyme.glitch.me/grant_role', {
+                return fetch('https://inky-neat-thyme.glitch.me/grant_role', {
                     method: 'POST',
                     credentials: 'include', // クッキーを含む
                     headers: {
@@ -39,34 +39,32 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     body: JSON.stringify({
                         access_token: accessToken,
-                        user_id: data.id
-                    }),
-                    mode: 'no-cors'
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.json().then(errorData => {
-                            throw new Error(`Failed to grant role: ${errorData.error}`);
-                        });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    const roleId = data.roleId; // server.js から返された roleId を取得
-                    console.log('Role ID:', roleId);
-                    // ここで roleId を使って適切な処理を行う
-                })
-                .catch(error => {
-                    console.error('Error granting role:', error);
-                    // エラー時の処理を記述
-                })
-                .then(result => console.log('Role granted successfully:', result))
-                .catch(error => console.error('Error granting role:', error));
+                        user_id: data.id,
+                        role_id: roleId // server.js からの role_id を追加
+                    })
+                });
             } else {
                 console.error('Error fetching user info:', data);
+                throw new Error('Failed to fetch user info');
             }
         })
-        .catch(error => console.error('Error fetching user info:', error));
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    throw new Error(`Failed to grant role: ${errorData.error}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            const roleId = data.roleId; // server.js から返された roleId を取得
+            console.log('Role ID:', roleId);
+            // ここで roleId を使って適切な処理を行う
+        })
+        .catch(error => {
+            console.error('Error granting role:', error);
+            // エラー時の処理を記述
+        });
     } else {
         // アクセストークンがない場合、認証ボタンを表示
         authButton.style.display = 'inline-block';
