@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -11,21 +12,14 @@
         <div id="auth-warning" class="auth-warning">
             <p>注意: あなたのユーザー情報が正しいかどうかご確認ください</p>
         </div>
-        <div id="user-info">
+        <div id="user-info" style="display: none;">
             <img id="avatar" alt="Avatar">
             <p id="username"></p>
             <p id="user-id"></p> <!-- ユーザーIDを表示するための要素 -->
         </div>
-        <button id="auth-button" class="button">認証する</button>
+        <button id="auth-button" class="button" style="display: none;">認証する</button>
     </div>
     <script src="script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('auth-button').addEventListener('click', function() {
-                // 認証ボタンを押したときの処理はscript.jsで行うのでここでは何もしない
-            });
-        });
-    </script>
     <script>
         // script.jsからのリダイレクトを処理する
         function handleAuthResult(success) {
@@ -35,6 +29,25 @@
                 window.location.href = 'https://republicofauech.github.io/vearithy/failure';
             }
         }
+
+        // DOMContentLoadedで認証ボタンのクリックイベントを待つ
+        document.addEventListener('DOMContentLoaded', function() {
+            const authButton = document.getElementById('auth-button');
+
+            authButton.style.display = 'inline-block'; // ボタンを表示する
+
+            authButton.addEventListener('click', function() {
+                // 認証ボタンを押したときの処理
+                // 仮の成功/失敗判定
+                const success = true; // ここを実際の判定に合わせて変更する
+
+                if (success) {
+                    handleAuthResult(true);
+                } else {
+                    handleAuthResult(false);
+                }
+            });
+        });
     </script>
 </body>
 </html>
