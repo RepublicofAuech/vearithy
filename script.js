@@ -8,10 +8,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const resultMessage = document.getElementById('result-message');
     const resultText = document.getElementById('result-text');
     const accessToken = getQueryParam('access_token');
-    let roleId; // roleId をここで定義
+    let userId;
 
     if (accessToken) {
-        // アクセストークンがある場合、ユーザー情報を取得してロール付与を試みる
+        // アクセストークンがある場合、ユーザー情報を取得
         fetch('https://inky-neat-thyme.glitch.me/user_info', {
             method: 'GET',
             credentials: 'include', // クッキーを含む
@@ -32,66 +32,62 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('username').innerText = `${data.username}#${data.discriminator}`;
                 document.getElementById('user-id').innerText = `(${data.id})`;
                 document.getElementById('user-info').style.display = 'block';
-
-                // ロール付与リクエストを送信
-                return fetch('https://inky-neat-thyme.glitch.me/grant_role', {
-                    method: 'POST',
-                    credentials: 'include', // クッキーを含む
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        access_token: accessToken,
-                        user_id: data.id,
-                        role_id: roleId // roleId を追加
-                    })
-                });
+                authButton.style.display = 'inline-block'; // 認証ボタンを表示
+                userId = data.id; // ユーザーIDを保存
             } else {
                 console.error('Error fetching user info:', data);
                 throw new Error('Failed to fetch user info');
             }
         })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(errorData => {
-                    throw new Error(`Failed to grant role: ${errorData.error}`);
-                });
-            }
-            return response.json();
-        })
-        .then(data => {
-            roleId = data.roleId; // server.js から返された roleId を取得
-            console.log('Role ID:', roleId);
-            resultText.innerText = '認証が成功しました。リダイレクトしています...';
-            resultMessage.style.display = 'block';
-            setTimeout(function() {
-                window.location.href = 'https://republicofauech.github.io/vearithy/success/';
-            }, 2000); // 2秒後に成功ページにリダイレクト
-        })
         .catch(error => {
-            console.error('Error granting role:', error);
-            resultText.innerText = 'ロールの付与中にエラーが発生しました。リダイレクトしています...';
+            console.error('Error fetching user info:', error);
+            resultText.innerText = 'ユーザー情報の取得中にエラーが発生しました。再度お試しください。';
             resultMessage.style.display = 'block';
-            setTimeout(function() {
-                window.location.href = 'https://republicofauech.github.io/vearithy/failure/';
-            }, 2000); // 2秒後に失敗ページにリダイレクト
         });
-    } else {
-        // アクセストークンがない場合、認証ボタンを表示
-        authButton.style.display = 'inline-block';
     }
 
     authButton.addEventListener('click', function() {
-        // 認証ボタンを押したときの処理
-        // 仮の成功/失敗判定
-        const success = true; // ここを実際の判定に合わせて変更する
-
-        if (success) {
-            resultText.innerText = '認証が成功しました。ユーザー情報を取得しています...';
+        if (userId) {
+            // ロール付与リクエストを送信
+            fetch('https://inky-neat-thyme.glitch.me/grant_role', {
+                method: 'POST',
+                credentials: 'include', // クッキーを含む
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    access_token: accessToken,
+                    user_id: userId
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(`Failed to grant role: ${errorData.error}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                const roleId = data.roleId; // server.js から返された roleId を取得
+                console.log('Role ID:', roleId);
+                resultText.innerText = '認証が成功しました。リダイレクトしています...';
+                resultMessage.style.display = 'block';
+                setTimeout(function() {
+                    window.location.href = 'https://republicofauech.github.io/vearithy/success/';
+                }, 2000); // 2秒後に成功ページにリダイレクト
+            })
+            .catch(error => {
+                console.error('Error granting role:', error);
+                resultText.innerText = 'ロールの付与中にエラーが発生しました。リダイレクトしています...';
+                resultMessage.style.display = 'block';
+                setTimeout(function() {
+                    window.location.href = 'https://republicofauech.github.io/vearithy/failure/';
+                }, 2000); // 2秒後に失敗ページにリダイレクト
+            });
         } else {
-            resultText.innerText = '認証に失敗しました。再度お試しください。';
+            resultText.innerText = 'ユーザー情報が取得されていません。再度お試しください。';
+            resultMessage.style.display = 'block';
         }
-
-        resultMessage.style.display = 'block';
     });
 });
