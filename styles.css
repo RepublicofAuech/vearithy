@@ -14,7 +14,8 @@ body {
     padding: 20px;
     border-radius: 10px;
     text-align: center;
-    width: 25%;
+    width: 90%;
+    max-width: 400px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 影の追加 */
 }
 
@@ -26,6 +27,8 @@ body {
     background-color: #7289da;
     text-decoration: none;
     border-radius: 5px;
+    border: none; /* ボーダーを削除 */
+    cursor: pointer; /* カーソルをポインターに変更 */
 }
 
 .button:hover {
@@ -35,6 +38,8 @@ body {
 #user-info img {
     border-radius: 50%;
     margin-top: 10px;
+    width: 80px;
+    height: 80px; /* アイコンサイズを調整 */
 }
 
 .auth-warning {
@@ -47,4 +52,30 @@ body {
 
 #user-info {
     display: none;
+}
+
+select {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #40444b;
+    color: #ffffff;
+    border: 1px solid #72767d;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+select:focus {
+    outline: none;
+    border-color: #7289da;
+}
+
+#result-message {
+    margin-top: 20px;
+}
+
+#result-text {
+    color: #ffffff;
+    font-weight: bold;
 }
