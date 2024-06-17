@@ -9,12 +9,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (accessToken) {
         // アクセストークンがある場合、ユーザー情報を取得してロール付与を試みる
-        fetch('https://inky-neat-thyme.glitch.me/user_info', {
-            method: 'GET',
-            credentials: 'include', // クッキーを含む
+        fetch('https://inky-neat-thyme.glitch.me/grant_role', {
+            method: 'POST',
             headers: {
-                'Authorization': `Bearer ${accessToken}`
-            }
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                access_token: 'your_access_token',
+                user_id: 'user_id',
+                role_id: 'role_id'
+            }),
+            mode: 'cors', // デフォルトは 'cors' ですが明示的に設定
+            credentials: 'include' // クッキーを含むリクエストを許可する場合
         })
         .then(response => {
             if (!response.ok) {
