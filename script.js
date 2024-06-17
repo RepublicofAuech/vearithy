@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 const roleId = data.roleId; // server.js から返された roleId を取得
                 console.log('Role ID:', roleId);
-                resultText.innerText = '認証が成功しました。リダイレクトしています...';
+                resultText.innerText = '認証中です...';
                 resultMessage.style.display = 'block';
                 setTimeout(function() {
                     window.location.href = 'https://republicofauech.github.io/vearithy/success/';
