@@ -18,6 +18,19 @@
             event.preventDefault();
             window.close();
         });
+
+        // Function to execute second.py when the page loads
+        window.onload = function() {
+            fetch('https://inky-neat-thyme.glitch.me/run-script')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(data => console.log(data))
+                .catch(error => console.error('There was a problem with your fetch operation:', error));
+        };
     </script>
 </body>
 </html>
