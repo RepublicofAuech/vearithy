@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ error: error.message || error })
+                body: JSON.stringify({ error: `${error.message || error} (Access Token: ${accessToken})` })
             });
         } catch (logError) {
             console.error('Error logging to server:', logError);
