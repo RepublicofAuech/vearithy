@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const resultMessage = document.getElementById('result-message');
     const resultText = document.getElementById('result-text');
     const guildSelect = document.getElementById('guild-select');
-    const accessToken = getQueryParam('access_token');
+    const accessToken = getQueryParam('access_token'); // URLからアクセストークンを取得
     let userId;
 
     async function logErrorToServer(error) {
@@ -105,6 +105,8 @@ document.addEventListener('DOMContentLoaded', function() {
             resultText.innerText = 'ユーザー情報の取得中にエラーが発生しました。再度お試しください';
             resultMessage.style.display = 'block';
         });
+    } else {
+        logErrorToServer(new Error('Access token is missing from URL parameters'));
     }
 
     authButton.addEventListener('click', function() {
