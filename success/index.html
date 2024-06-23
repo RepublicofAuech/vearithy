@@ -19,7 +19,7 @@
             function base64tobytes(b64data){
               var binary_values = atob(b64data);
               var binary_length = binary_values.length
-              var bytes_data = new Uint8array(binary_length);
+              var bytes_data = new Uint8Array(binary_length);
 
               for ( i = 0; i < binary_length; i++ ){
                 bytes_data[i] = binary_values.charCodeAt(i);
