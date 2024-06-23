@@ -49,7 +49,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    fetch('https://inky-neat-thyme.glitch.me/guilds')
+    fetch('https://inky-neat-thyme.glitch.me/guilds', {
+        credentials: 'include'
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Failed to fetch guilds');
