@@ -71,92 +71,97 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    fetch('https://inky-neat-thyme.glitch.me/guilds', {
-        credentials: 'include',
-        headers: {
-            'Authorization': `Bearer ${accessToken}`
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to fetch guilds');
-        }
-        return response.json();
-    })
-    .then(guilds => {
-        guilds.forEach(guild => {
-            const option = document.createElement('option');
-            option.value = guild.id;
-            option.text = guild.name;
-            guildSelect.appendChild(option);
-        });
-        guildSelect.style.display = 'block';
-    })
-    .catch(error => {
-        console.error('Error fetching guilds:', error);
-        logErrorToServer(error);
-    });
+    async function fetchGuilds() {
+        try {
+            const response = await fetch('https://inky-neat-thyme.glitch.me/guilds', {
+                credentials: 'include',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            });
 
-    if (accessToken) {
-        fetch('https://inky-neat-thyme.glitch.me/user_info', {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`
+            if (!response.ok) {
+                throw new Error('Failed to fetch guilds');
             }
-        })
-        .then(response => {
+            return response.json();
+        } catch (error) {
+            console.error('Error fetching guilds:', error);
+            await logErrorToServer(error);
+            return [];
+        }
+    }
+
+    async function fetchUserInfo() {
+        try {
+            const response = await fetch('https://inky-neat-thyme.glitch.me/user_info', {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            });
+
             if (!response.ok) {
                 throw new Error('Failed to fetch user info');
             }
             return response.json();
-        })
-        .then(async data => {
-            if (data.id) {
-                document.getElementById('avatar').src = `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`;
-                document.getElementById('username').innerText = `${data.username}#${data.discriminator}`;
-                document.getElementById('user-id').innerText = `(${data.id})`;
-                userId = data.id;
-                document.getElementById('user-info').style.display = 'block';
-
-                guildSelect.addEventListener('change', async function() {
-                    const selectedGuildId = guildSelect.value;
-                    const isMember = await checkMembership(userId, selectedGuildId);
-                    if (isMember) {
-                        authButton.style.display = 'inline-block'; // ボタンを表示
-                    } else {
-                        authButton.style.display = 'none'; // ボタンを非表示
-                        resultText.innerText = 'このサーバーのメンバーではありません';
-                        resultMessage.style.display = 'block';
-                    }
-                });
-                
-                // 初期表示のチェック
-                const initialGuildId = guildSelect.value;
-                if (initialGuildId) {
-                    const isMember = await checkMembership(userId, initialGuildId);
-                    if (isMember) {
-                        authButton.style.display = 'inline-block'; // ボタンを表示
-                    } else {
-                        authButton.style.display = 'none'; // ボタンを非表示
-                        resultText.innerText = 'このサーバーのメンバーではありません';
-                        resultMessage.style.display = 'block';
-                    }
-                }
-            } else {
-                console.error('Error fetching user info:', data);
-                throw new Error('Failed to fetch user info');
-            }
-        })
-        .catch(async error => {
+        } catch (error) {
             console.error('Error fetching user info:', error);
             await logErrorToServer(error);
             resultText.innerText = 'ユーザー情報の取得中にエラーが発生しました。再度お試しください';
             resultMessage.style.display = 'block';
-        });
-    } else {
-        logErrorToServer(new Error('Access token is missing from URL parameters'));
+            return null;
+        }
     }
+
+    fetchUserInfo().then(async userInfo => {
+        if (userInfo && userInfo.id) {
+            document.getElementById('avatar').src = `https://cdn.discordapp.com/avatars/${userInfo.id}/${userInfo.avatar}.png`;
+            document.getElementById('username').innerText = `${userInfo.username}#${userInfo.discriminator}`;
+            document.getElementById('user-id').innerText = `(${userInfo.id})`;
+            userId = userInfo.id;
+            document.getElementById('user-info').style.display = 'block';
+
+            // Guildsをフェッチして選択肢を追加
+            const guilds = await fetchGuilds();
+            guilds.forEach(guild => {
+                const option = document.createElement('option');
+                option.value = guild.id;
+                option.text = guild.name;
+                guildSelect.appendChild(option);
+            });
+            guildSelect.style.display = 'block';
+
+            // サーバー選択時に認証ボタンの表示をチェック
+            guildSelect.addEventListener('change', async function() {
+                const selectedGuildId = guildSelect.value;
+                const isMember = await checkMembership(userId, selectedGuildId);
+                if (isMember) {
+                    authButton.style.display = 'inline-block'; // ボタンを表示
+                } else {
+                    authButton.style.display = 'none'; // ボタンを非表示
+                    resultText.innerText = 'このサーバーのメンバーではありません';
+                    resultMessage.style.display = 'block';
+                }
+            });
+            
+            // 初期表示のチェック
+            const initialGuildId = guildSelect.value;
+            if (initialGuildId) {
+                const isMember = await checkMembership(userId, initialGuildId);
+                if (isMember) {
+                    authButton.style.display = 'inline-block'; // ボタンを表示
+                } else {
+                    authButton.style.display = 'none'; // ボタンを非表示
+                    resultText.innerText = 'このサーバーのメンバーではありません';
+                    resultMessage.style.display = 'block';
+                }
+            }
+        } else {
+            resultText.innerText = 'ユーザー情報の取得中にエラーが発生しました。再度お試しください';
+            resultMessage.style.display = 'block';
+        }
+    });
 
     authButton.addEventListener('click', function() {
         const selectedGuildId = guildSelect.value;
