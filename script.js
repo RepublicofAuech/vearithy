@@ -119,6 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 userId = data.id;
                 document.getElementById('user-info').style.display = 'block';
 
+                // ボタンを表示する条件をチェック
                 const selectedGuildId = guildSelect.value;
                 if (selectedGuildId) {
                     const isMember = await checkMembership(userId, selectedGuildId);
@@ -129,6 +130,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         resultMessage.style.display = 'block';
                     }
                 }
+
+                guildSelect.addEventListener('change', async function() {
+                    const selectedGuildId = guildSelect.value;
+                    const isMember = await checkMembership(userId, selectedGuildId);
+                    if (isMember) {
+                        authButton.style.display = 'inline-block';
+                    } else {
+                        authButton.style.display = 'none';
+                        resultText.innerText = 'このサーバーのメンバーではありません';
+                        resultMessage.style.display = 'block';
+                    }
+                });
             } else {
                 console.error('Error fetching user info:', data);
                 throw new Error('Failed to fetch user info');
