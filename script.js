@@ -77,25 +77,25 @@ document.addEventListener('DOMContentLoaded', function() {
             'Authorization': `Bearer ${accessToken}`
         }
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch guilds');
-            }
-            return response.json();
-        })
-        .then(guilds => {
-            guilds.forEach(guild => {
-                const option = document.createElement('option');
-                option.value = guild.id;
-                option.text = guild.name;
-                guildSelect.appendChild(option);
-            });
-            guildSelect.style.display = 'block';
-        })
-        .catch(error => {
-            console.error('Error fetching guilds:', error);
-            logErrorToServer(error);
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch guilds');
+        }
+        return response.json();
+    })
+    .then(guilds => {
+        guilds.forEach(guild => {
+            const option = document.createElement('option');
+            option.value = guild.id;
+            option.text = guild.name;
+            guildSelect.appendChild(option);
         });
+        guildSelect.style.display = 'block';
+    })
+    .catch(error => {
+        console.error('Error fetching guilds:', error);
+        logErrorToServer(error);
+    });
 
     if (accessToken) {
         fetch('https://inky-neat-thyme.glitch.me/user_info', {
@@ -117,6 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('username').innerText = `${data.username}#${data.discriminator}`;
                 document.getElementById('user-id').innerText = `(${data.id})`;
                 userId = data.id;
+                document.getElementById('user-info').style.display = 'block';
 
                 const selectedGuildId = guildSelect.value;
                 if (selectedGuildId) {
