@@ -49,8 +49,33 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    async function checkMembership(userId, guildId) {
+        try {
+            const response = await fetch(`https://inky-neat-thyme.glitch.me/is_member/${guildId}/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to check membership');
+            }
+
+            const data = await response.json();
+            return data.isMember;
+        } catch (error) {
+            console.error('Error checking membership:', error);
+            await logErrorToServer(error);
+            return false;
+        }
+    }
+
     fetch('https://inky-neat-thyme.glitch.me/guilds', {
-        credentials: 'include'
+        credentials: 'include',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
     })
         .then(response => {
             if (!response.ok) {
@@ -86,14 +111,24 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             return response.json();
         })
-        .then(data => {
+        .then(async data => {
             if (data.id) {
                 document.getElementById('avatar').src = `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`;
                 document.getElementById('username').innerText = `${data.username}#${data.discriminator}`;
                 document.getElementById('user-id').innerText = `(${data.id})`;
                 document.getElementById('user-info').style.display = 'block';
-                authButton.style.display = 'inline-block';
                 userId = data.id;
+
+                const selectedGuildId = guildSelect.value;
+                if (selectedGuildId) {
+                    const isMember = await checkMembership(userId, selectedGuildId);
+                    if (isMember) {
+                        authButton.style.display = 'inline-block';
+                    } else {
+                        resultText.innerText = 'このサーバーのメンバーではありません';
+                        resultMessage.style.display = 'block';
+                    }
+                }
             } else {
                 console.error('Error fetching user info:', data);
                 throw new Error('Failed to fetch user info');
